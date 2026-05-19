@@ -1,0 +1,927 @@
+<div class="flex flex-col min-h-screen bg-[#f1e1c8]">
+  
+  <!-- HOME TAB -->
+  @if (activeTab() === 'home') {
+    <app-topbar />
+    <main class="flex-1 w-full max-w-6xl mx-auto px-4 md:px-6 pt-6 pb-28
+                 grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
+
+      <!-- LEFT: Sales + Metrics -->
+      <section class="flex flex-col gap-5">
+
+        <!-- Today's Sales Card (purple gradient) -->
+        <div class="rounded-3xl p-7 bg-gradient-to-br from-[#7b35a3] to-[#4e2069]
+                    text-white shadow-2xl shadow-[#632a85]/30 relative overflow-hidden">
+          <div class="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/[0.06]"></div>
+          <span class="text-[#f1e1c8]/90 text-xs font-bold uppercase tracking-widest">
+            Today's Total Sales
+          </span>
+          <div class="flex items-center gap-4 my-2">
+            <h2 class="text-4xl font-extrabold tracking-tight">{{ pos.salesDisplay() }}</h2>
+            <button (click)="pos.toggleVisibility()"
+                    class="w-9 h-9 rounded-full bg-white/15 border border-white/15
+                           flex items-center justify-center transition hover:bg-white/25">
+              <mat-icon class="!text-[18px]">
+                {{ pos.isSalesVisible() ? 'visibility' : 'visibility_off' }}
+              </mat-icon>
+            </button>
+          </div>
+          <p class="text-[#f1e1c8]/70 text-xs font-medium">Real-time checkout data feed.</p>
+        </div>
+
+        <!-- Submetrics grid (olive cards) -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="rounded-2xl p-5 bg-[#727339] text-[#f1e1c8] shadow-lg shadow-[#727339]/20">
+            <div class="flex items-center gap-1.5 text-[#f1e1c8]/70 text-[10px] font-bold uppercase tracking-wider mb-2">
+              <mat-icon class="!text-sm text-[#c88aff]">trending_up</mat-icon>
+              Avg Sale
+            </div>
+            <span class="text-2xl font-extrabold">{{ pos.avgDisplay() }}</span>
+          </div>
+          <div class="rounded-2xl p-5 bg-[#727339] text-[#f1e1c8] shadow-lg shadow-[#727339]/20">
+            <div class="flex items-center gap-1.5 text-[#f1e1c8]/70 text-[10px] font-bold uppercase tracking-wider mb-2">
+              <mat-icon class="!text-sm text-[#c88aff]">receipt_long</mat-icon>
+              Bills Count
+            </div>
+            <span class="text-2xl font-extrabold">{{ pos.billsDisplay() }}</span>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- RIGHT: Invoice List -->
+      <section>
+        <div class="rounded-3xl p-6 bg-white/65 backdrop-blur border border-[#727339]/12
+                    shadow-xl shadow-[#727339]/[0.07]">
+
+          <!-- Header -->
+          <div class="flex justify-between items-center mb-4 pb-3 border-b border-[#727339]/15">
+            <h3 class="text-sm font-extrabold text-[#2a2a18]">Recent Sales Invoices</h3>
+            <span class="flex items-center gap-1.5 text-xs font-extrabold text-[#632a85]
+                         bg-[#632a85]/[0.08] px-3 py-1 rounded-xl">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#632a85] animate-pulse"></span>
+              Live POS Sync
+            </span>
+          </div>
+
+          <!-- List -->
+          <div class="flex flex-col gap-2.5 max-h-72 overflow-y-auto pr-1
+                      [&::-webkit-scrollbar]:w-1
+                      [&::-webkit-scrollbar-thumb]:bg-[#632a85]/25
+                      [&::-webkit-scrollbar-thumb]:rounded-full">
+            @for (tx of pos.transactions(); track tx.id) {
+              <div class="flex items-center justify-between bg-[#f1e1c8] rounded-2xl
+                          px-4 py-3 border border-[#727339]/10 animate-[slideIn_0.3s_ease]">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-full bg-[#632a85]/10 text-[#632a85]
+                              flex items-center justify-center flex-shrink-0">
+                    <mat-icon class="!text-[16px]">check</mat-icon>
+                  </div>
+                  <div>
+                    <p class="text-[13px] font-bold text-[#2a2a18]">{{ tx.name }}</p>
+                    <p class="text-[11px] font-medium text-[#727339]">{{ tx.time }}</p>
+                  </div>
+                </div>
+                <span class="text-[14px] font-extrabold text-[#632a85]">{{ tx.amount }}</span>
+              </div>
+            }
+          </div>
+
+          <!-- Add Invoice -->
+          <div class="mt-4 flex justify-center">
+            <button (click)="addInvoice()"
+                    [disabled]="pos.isLoading()"
+                    class="flex items-center gap-2 px-6 py-2.5 rounded-full
+                           bg-gradient-to-r from-[#7b35a3] to-[#4e2069] text-white
+                           text-sm font-bold shadow-lg shadow-[#632a85]/25
+                           hover:shadow-xl hover:-translate-y-0.5 active:scale-95
+                           transition-all disabled:opacity-60">
+              @if (pos.isLoading()) {
+                <mat-spinner diameter="16" color="accent"></mat-spinner>
+                Adding...
+              } @else {
+                <mat-icon class="!text-base">add</mat-icon>
+                Add New Invoice
+              }
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+  }
+
+  <!-- REPORTS TAB -->
+  @if (activeTab() === 'reports') {
+    <app-reports />
+  }
+
+  <!-- CATALOGUE TAB -->
+  @if (activeTab() === 'catalogue') {
+    <main class="flex-1 w-full max-w-3xl mx-auto px-4 pt-5 pb-28 flex flex-col gap-4">
+      @if (!isCheckoutActive()) {
+        @if (isPOSMode()) {
+          <!-- TOP SEARCH BAR & KOT -->
+          <header class="-mx-4 -mt-5 bg-[#f0c355] px-6 py-4 flex gap-4 items-center justify-between rounded-b-[32px] shadow-sm">
+            <div class="flex-1 relative">
+              <mat-icon class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 !text-[20px] w-5 h-5 flex items-center justify-center">search</mat-icon>
+              <input type="text"
+                     [value]="catalogueSearchQuery()"
+                     (input)="catalogueSearchQuery.set($any($event.target).value)"
+                     placeholder="Search products, SKU, or price..."
+                     class="w-full bg-white rounded-full pl-12 pr-4 py-3 text-sm font-semibold text-[#2a2a18] placeholder-gray-400 focus:outline-none shadow-sm transition">
+            </div>
+            <button (click)="printKOT()"
+                    class="bg-[#2a2a18] text-[#f0c355] font-extrabold text-xs px-5 py-3 rounded-2xl shadow-sm flex items-center gap-1.5 hover:opacity-90 active:scale-95 transition">
+              <mat-icon class="!text-sm">print</mat-icon>
+              KOT
+            </button>
+          </header>
+
+          <!-- CONTENT BODY (SIDEBAR + MAIN GRID) -->
+          <div class="flex-1 flex flex-col mt-4 gap-3 select-none">
+            
+            <!-- Draft Tabs (Row at the top of catalogue view) -->
+            <div class="flex items-center gap-2 px-1">
+              <!-- Active Tab 1 -->
+              <button class="bg-[#f0c355] text-[#2a2a18] w-10 h-10 rounded-2xl text-sm font-extrabold shadow-sm flex items-center justify-center">1</button>
+              <!-- + New Button -->
+              <button (click)="clearCart()" class="border border-green-600/30 bg-green-50/50 text-green-600 px-4 h-10 rounded-2xl text-xs font-bold flex items-center gap-1.5 active:scale-95 transition">
+                <span class="text-base font-extrabold">+</span> New
+              </button>
+              <!-- Delete tab button -->
+              <button (click)="clearCart()" class="border border-red-500/30 bg-red-50/50 text-red-500 w-10 h-10 rounded-2xl flex items-center justify-center active:scale-95 transition">
+                <mat-icon class="!text-base">close</mat-icon>
+              </button>
+            </div>
+
+            <div class="flex gap-4">
+              <!-- Left sidebar: categories -->
+              <aside class="w-[85px] flex flex-col gap-2.5">
+                <!-- Favorites button -->
+                <button (click)="activeCategory.set('Favorites')"
+                        class="w-full py-4 text-center font-extrabold text-xs rounded-[18px] transition duration-200 active:scale-95 shadow-sm
+                               {{ activeCategory() === 'Favorites' ? 'bg-[#ef4444] text-white' : 'bg-white text-gray-500 hover:bg-gray-50' }}">
+                  Favorites
+                </button>
+
+                <!-- Dynamic list of standard categories -->
+                @for (cat of ['All', 'Base', 'Combo', 'Middle', 'No']; track cat) {
+                  <button (click)="activeCategory.set(cat)"
+                          class="w-full py-4 text-center font-extrabold text-xs rounded-[18px] transition duration-200 active:scale-95 shadow-sm
+                                 {{ activeCategory() === cat ? 'bg-[#f0c355] text-[#2a2a18]' : 'bg-white text-gray-500 hover:bg-gray-50' }}">
+                    {{ cat }}
+                  </button>
+                }
+              </aside>
+
+              <!-- Main right: Product Grid List -->
+              <main class="flex-1 grid grid-cols-2 gap-3.5 content-start overflow-y-auto max-h-[calc(100vh-280px)] pb-24 pr-1">
+                @for (prod of filteredProducts(); track prod.name) {
+                  <div class="bg-white rounded-[24px] p-4 border border-[#727339]/10 shadow-sm flex flex-col items-center text-center gap-2 relative">
+                    <!-- Heart badge (Favorites) -->
+                    <button (click)="prod.isFavorite = !prod.isFavorite"
+                            class="absolute top-3.5 right-3.5 text-gray-300 hover:text-[#ef4444] transition">
+                      <mat-icon class="!text-[20px] transition-colors {{ prod.isFavorite ? 'text-[#ef4444]' : 'text-gray-300' }}">
+                        {{ prod.isFavorite ? 'favorite' : 'favorite_border' }}
+                      </mat-icon>
+                    </button>
+
+                    <!-- Box Graphic Illustration -->
+                    <div class="w-24 h-24 my-1 flex items-center justify-center relative">
+                      <svg viewBox="0 0 100 100" class="w-full h-full">
+                        <path d="M50,15 L90,32 L90,68 L50,85 L10,68 L10,32 Z" fill="#ffd778" stroke="#2a2a18" stroke-width="3" stroke-linejoin="round"/>
+                        <path d="M50,47 L10,32 L10,68 L50,85 Z" fill="#f0be4d" stroke="#2a2a18" stroke-width="3" stroke-linejoin="round"/>
+                        <path d="M50,15 L90,32 L50,47 L10,32 Z" fill="#ffd778" stroke="#2a2a18" stroke-width="3" stroke-linejoin="round"/>
+                        <path d="M42,22 L58,29 L58,51 L42,44 Z" fill="#ef4444" stroke="#2a2a18" stroke-width="2"/>
+                        <line x1="20" y1="52" x2="35" y2="58" stroke="#2a2a18" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="20" y1="60" x2="35" y2="66" stroke="#2a2a18" stroke-width="3" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="flex flex-col gap-0.5">
+                      <span class="text-sm font-extrabold text-[#2a2a18] line-clamp-1">{{ prod.name }}</span>
+                      <span class="text-[10px] font-semibold text-gray-400">{{ prod.unit }}</span>
+                    </div>
+
+                    <!-- Price -->
+                    <span class="text-[14px] font-extrabold text-[#2a2a18] mb-1">₹{{ prod.price.toFixed(2) }}</span>
+
+                    <!-- Add + or Quantity counters -->
+                    @if (getProductCartQuantity(prod.name) > 0) {
+                      <div class="w-full flex items-center justify-between gap-1">
+                        <!-- Decrement button -->
+                        <button (click)="decrementProductQuantity(prod)"
+                                class="w-9 h-9 rounded-full bg-white border border-[#f0c355]/40 text-[#2a2a18] flex items-center justify-center font-extrabold hover:bg-gray-50 transition active:scale-95">
+                          —
+                        </button>
+                        <!-- Quantity text input -->
+                        <div class="flex-1 flex justify-center border-b border-[#2a2a18] py-1 mx-2">
+                          <input type="text"
+                                 [value]="getProductCartQuantity(prod.name).toFixed(3)"
+                                 (input)="updateProductQuantity(prod, $any($event.target).value)"
+                                 class="w-full bg-transparent text-center text-xs font-bold text-[#2a2a18] focus:outline-none">
+                        </div>
+                      </div>
+                    } @else {
+                      <button (click)="addProductToCart(prod)"
+                              class="w-full bg-[#f0c355] text-[#2a2a18] font-extrabold py-2.5 rounded-xl text-xs hover:opacity-90 active:scale-95 shadow-sm transition flex items-center justify-center gap-1.5">
+                        Add
+                        <mat-icon class="!text-sm w-3.5 h-3.5 flex items-center justify-center">shopping_cart</mat-icon>
+                      </button>
+                    }
+                  </div>
+                } @empty {
+                  <div class="col-span-2 py-20 text-center flex flex-col items-center justify-center gap-3">
+                    <mat-icon class="!text-[48px] text-gray-300">inventory_2</mat-icon>
+                    <span class="text-sm font-bold text-gray-400">No products found</span>
+                  </div>
+                }
+              </main>
+            </div>
+          </div>
+
+          <!-- CART BOTTOM OVERLAY PANEL (Only visible if cart not empty and not in checkout) -->
+          @if (cart().length > 0) {
+            <div class="fixed bottom-24 left-0 right-0 z-40 px-4 max-w-lg mx-auto pointer-events-none animate-[slideUp_0.25s_ease]">
+              <div class="bg-[#f0c355] rounded-3xl p-5 shadow-2xl pointer-events-auto border border-[#727339]/12 flex flex-col gap-3">
+                <div class="flex justify-between items-center text-[#2a2a18]">
+                  <div class="flex items-center gap-2">
+                    <mat-icon class="!text-lg">shopping_cart</mat-icon>
+                    <span class="text-sm font-extrabold">Your Cart ({{ cartTotalCount() }})</span>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <button (click)="clearCart()" class="text-red-600 hover:opacity-80 transition">
+                      <mat-icon class="!text-lg">delete</mat-icon>
+                    </button>
+                    <mat-icon class="!text-lg">expand_less</mat-icon>
+                  </div>
+                </div>
+                <div class="flex justify-between items-center pt-1">
+                  <span class="text-base font-extrabold text-[#2a2a18]">Total: ₹{{ cartTotalPrice().toFixed(2) }}</span>
+                  <button (click)="isCheckoutActive.set(true)"
+                          class="bg-[#2a2a18] text-[#f0c355] font-extrabold text-xs px-6 py-3.5 rounded-2xl shadow-sm flex items-center gap-2 hover:opacity-90 active:scale-95 transition">
+                    Checkout
+                    <span class="text-sm">➔</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+        } @else {
+          <!-- PRODUCT MANAGER MODE (AS SHOWN IN THE NEW SCREENSHOT) -->
+          <!-- TOP SEARCH BAR -->
+          <header class="-mx-4 -mt-5 bg-[#f0c355] px-6 py-4 flex gap-4 items-center justify-between rounded-b-[32px] shadow-sm select-none">
+            <div class="flex-1 relative">
+              <mat-icon class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 !text-[20px] w-5 h-5 flex items-center justify-center">search</mat-icon>
+              <input type="text"
+                     [value]="catalogueSearchQuery()"
+                     (input)="catalogueSearchQuery.set($any($event.target).value)"
+                     placeholder="Search products..."
+                     class="w-full bg-white rounded-full pl-12 pr-4 py-3 text-sm font-semibold text-[#2a2a18] placeholder-gray-400 focus:outline-none shadow-sm transition">
+            </div>
+          </header>
+
+          <!-- CONTENT BODY -->
+          <div class="flex-1 flex mt-4 gap-4 select-none">
+            <!-- Sidebar categories -->
+            <aside class="w-[85px] flex flex-col gap-2.5 flex-shrink-0">
+              @for (cat of categories(); track cat) {
+                <button (click)="activeCategory.set(cat)"
+                        class="w-full py-4 text-center font-extrabold text-xs rounded-[18px] transition duration-200 active:scale-95 shadow-sm
+                               {{ activeCategory() === cat ? 'bg-[#f0c355] text-[#2a2a18]' : 'bg-white text-gray-500 hover:bg-gray-50' }}">
+                  {{ cat }}
+                </button>
+              }
+            </aside>
+
+            <!-- Main right scrollable product list -->
+            <main class="flex-1 flex flex-col gap-3.5 content-start overflow-y-auto max-h-[calc(100vh-220px)] pb-36 pr-1">
+              @for (prod of filteredProducts(); track prod.name) {
+                <div class="bg-white rounded-[24px] p-4 border border-[#727339]/10 shadow-sm flex items-center justify-between gap-3 relative animate-[slideIn_0.2s_ease]">
+                  <div class="flex items-center gap-3.5 min-w-0">
+                    <!-- Product image placeholder box -->
+                    <div class="w-16 h-16 bg-gray-50 border border-gray-150 rounded-[18px] flex items-center justify-center text-gray-300 flex-shrink-0">
+                      <mat-icon class="!text-[28px] w-7 h-7 flex items-center justify-center">image</mat-icon>
+                    </div>
+                    <!-- Details -->
+                    <div class="flex flex-col gap-0.5 min-w-0">
+                      <span class="text-sm font-extrabold text-[#2a2a18] truncate">{{ prod.name }}</span>
+                      <span class="text-[10px] font-semibold text-gray-400">{{ prod.category }}</span>
+                      <span class="text-xs font-bold text-[#2a2a18] mt-1">₹{{ prod.price.toFixed(2) }}</span>
+                    </div>
+                  </div>
+                  <!-- Edit action button -->
+                  <button (click)="openEditProductModal(prod)"
+                          class="bg-[#f0c355] text-[#2a2a18] font-extrabold text-xs px-5 py-2.5 rounded-xl shadow-xs hover:opacity-90 active:scale-95 transition flex-shrink-0">
+                    Edit
+                  </button>
+                </div>
+              } @empty {
+                <div class="py-20 text-center flex flex-col items-center justify-center gap-3 w-full">
+                  <mat-icon class="!text-[48px] text-gray-300">inventory_2</mat-icon>
+                  <span class="text-sm font-bold text-gray-400">No products found</span>
+                </div>
+              }
+            </main>
+          </div>
+
+          <!-- Bottom floating Add Product button -->
+          <div class="fixed bottom-24 left-0 right-0 z-40 px-4 flex justify-center pointer-events-none">
+            <button (click)="openAddProductModal()"
+                    class="pointer-events-auto bg-[#f0c355] text-[#2a2a18] font-extrabold text-xs px-8 py-3.5 rounded-2xl shadow-lg hover:opacity-95 active:scale-95 transition flex items-center gap-1.5 border border-[#727339]/10">
+              <span class="text-sm font-bold">+</span>
+              Add Product
+            </button>
+          </div>
+        }
+      } @else {
+        @if (!isBillSettingsActive()) {
+          <!-- NEW BILL CHECKOUT PAGE -->
+          <header class="-mx-4 -mt-5 bg-[#f0c355] px-6 py-4 flex items-center justify-between rounded-b-[32px] shadow-sm select-none">
+            <button (click)="isCheckoutActive.set(false)" class="text-[#2a2a18] hover:opacity-80 transition flex items-center justify-center w-8 h-8">
+              <mat-icon class="!text-lg font-extrabold">arrow_back</mat-icon>
+            </button>
+            <span class="text-sm font-extrabold text-[#2a2a18]">New Bill</span>
+            <button (click)="isBillSettingsActive.set(true)" class="text-[#2a2a18] hover:opacity-80 transition flex items-center justify-center w-8 h-8">
+              <mat-icon class="!text-lg">settings</mat-icon>
+            </button>
+          </header>
+
+          <div class="flex-1 flex flex-col gap-4 mt-5 pb-32 overflow-y-auto max-h-[calc(100vh-160px)] pr-1">
+            <!-- Order Type tabs -->
+            <div class="bg-white p-1 rounded-2xl flex border border-[#727339]/10 shadow-sm">
+              @for (type of ['Sale', 'Dine-In', 'Takeaway']; track type) {
+                <button (click)="checkoutOrderType.set($any(type))"
+                        class="flex-1 py-3 text-center text-xs font-bold rounded-xl transition duration-200
+                               {{ checkoutOrderType() === type ? 'bg-[#f0c355] text-[#2a2a18] shadow-sm' : 'text-gray-500 hover:bg-gray-50/50' }}">
+                  {{ type }}
+                </button>
+              }
+            </div>
+
+            <!-- Customer details card -->
+            <div class="bg-white rounded-3xl p-5 border border-[#727339]/10 shadow-sm flex flex-col gap-4">
+              <span class="text-xs font-bold text-gray-500">Customer Details</span>
+              <div class="grid grid-cols-2 gap-4">
+                <input type="text"
+                       [value]="checkoutCustomerName()"
+                       (input)="checkoutCustomerName.set($any($event.target).value)"
+                       placeholder="Name"
+                       class="w-full bg-gray-50/80 border border-gray-200 rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[#f0c355]">
+                <input type="text"
+                       [value]="checkoutCustomerPhone()"
+                       (input)="checkoutCustomerPhone.set($any($event.target).value)"
+                       placeholder="Phone"
+                       class="w-full bg-gray-50/80 border border-gray-200 rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[#f0c355]">
+              </div>
+            </div>
+
+            <!-- Items List Card -->
+            <div class="bg-white rounded-3xl p-5 border border-[#727339]/10 shadow-sm flex flex-col gap-3.5">
+              @for (item of cart(); track item.product.name) {
+                <div class="flex items-center justify-between gap-4 py-2 border-b border-gray-100 last:border-0 last:pb-0">
+                  <div class="flex flex-col gap-0.5">
+                    <span class="text-xs font-bold text-[#2a2a18]">{{ item.product.name }}</span>
+                    <span class="text-[10px] text-gray-400">₹{{ item.product.price.toFixed(2) }}/unit</span>
+                  </div>
+                  
+                  <div class="flex items-center gap-3">
+                    <!-- Decrement button -->
+                    <button (click)="decrementProductQuantity(item.product)"
+                            class="w-8 h-8 rounded-full bg-red-50 text-red-500 border border-red-100 flex items-center justify-center font-extrabold hover:bg-red-100 transition active:scale-95">
+                      -
+                    </button>
+                    <span class="text-xs font-bold text-[#2a2a18] min-w-[28px] text-center">{{ item.quantity.toFixed(2) }}</span>
+                    <!-- Increment button -->
+                    <button (click)="addProductToCart(item.product)"
+                            class="w-8 h-8 rounded-full bg-green-50 text-green-500 border border-green-100 flex items-center justify-center font-extrabold hover:bg-green-100 transition active:scale-95">
+                      +
+                    </button>
+                  </div>
+
+                  <span class="text-xs font-extrabold text-[#2a2a18]">₹{{ (item.product.price * item.quantity).toFixed(2) }}</span>
+                </div>
+              }
+            </div>
+
+            <!-- Middle actions buttons -->
+            <div class="grid grid-cols-2 gap-4">
+              <button class="bg-[#f0c355]/15 border border-[#f0c355]/30 text-[#2a2a18] py-3.5 rounded-2xl text-xs font-bold hover:bg-[#f0c355]/20 active:scale-[0.98] transition">
+                Select Charges
+              </button>
+              <button (click)="isDiscountActive.set(!isDiscountActive())"
+                      class="bg-[#f0c355] text-[#2a2a18] py-3.5 rounded-2xl text-xs font-bold hover:opacity-90 active:scale-[0.98] transition shadow-sm">
+                {{ isDiscountActive() ? 'Hide Discount' : 'Add Discount' }}
+              </button>
+            </div>
+
+            @if (isDiscountActive()) {
+              <div class="bg-white rounded-3xl p-5 border border-[#727339]/10 shadow-sm flex items-center justify-between gap-4 animate-[slideDown_0.2s_ease] select-none">
+                <span class="text-xs font-bold text-[#2a2a18]">Discount</span>
+                
+                <div class="bg-gray-100 p-0.5 rounded-full flex border border-gray-200">
+                  <button (click)="discountType.set('amount')"
+                          class="px-4 py-1.5 text-xs font-bold rounded-full transition {{ discountType() === 'amount' ? 'bg-[#f0c355] text-[#2a2a18] shadow-sm' : 'text-gray-500' }}">
+                    ₹
+                  </button>
+                  <button (click)="discountType.set('percentage')"
+                          class="px-4 py-1.5 text-xs font-bold rounded-full transition {{ discountType() === 'percentage' ? 'bg-[#f0c355] text-[#2a2a18] shadow-sm' : 'text-gray-500' }}">
+                    %
+                  </button>
+                </div>
+
+                <div class="bg-white border border-gray-250 rounded-2xl px-4 py-2 w-28 flex items-center justify-end">
+                  <input type="number"
+                         [value]="discountValue()"
+                         (input)="discountValue.set(+$any($event.target).value || 0)"
+                         class="bg-transparent border-0 font-bold text-xs text-[#2a2a18] focus:outline-none w-full text-right">
+                </div>
+              </div>
+            }
+
+            <!-- Calculation display -->
+            <div class="bg-white rounded-3xl p-5 border border-[#727339]/10 shadow-sm flex flex-col gap-3">
+              <div class="flex justify-between text-xs font-semibold text-gray-500">
+                <span>Subtotal</span>
+                <span>₹{{ cartTotalPrice().toFixed(2) }}</span>
+              </div>
+              <div class="h-px bg-gray-100"></div>
+              <div class="flex justify-between text-sm font-extrabold text-[#2a2a18]">
+                <span>Grand Total</span>
+                <span>₹{{ grandTotalPrice().toFixed(2) }}</span>
+              </div>
+            </div>
+
+            <!-- Payment Method section -->
+            <div class="bg-white rounded-3xl p-5 border border-[#727339]/10 shadow-sm flex flex-col gap-4">
+              <div class="flex justify-between items-center">
+                <span class="text-xs font-bold text-gray-500">Payment Method</span>
+                <div class="bg-gray-100 p-0.5 rounded-full flex border border-gray-200">
+                  <button (click)="paymentMode.set('single'); selectedPaymentMethods.set(['Cash'])"
+                          class="px-4 py-1.5 text-[10px] font-bold rounded-full transition {{ paymentMode() === 'single' ? 'bg-[#f0c355] text-[#2a2a18] shadow-sm' : 'text-gray-500' }}">
+                    Single
+                  </button>
+                  <button (click)="paymentMode.set('split')"
+                          class="px-4 py-1.5 text-[10px] font-bold rounded-full transition {{ paymentMode() === 'split' ? 'bg-[#f0c355] text-[#2a2a18] shadow-sm' : 'text-gray-500' }}">
+                    Split
+                  </button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-4 gap-2">
+                @for (method of ['Cash', 'UPI', 'Card', 'Credit']; track method) {
+                  <button (click)="togglePaymentMethod(method)"
+                          class="flex flex-col items-center gap-1.5 py-3 rounded-2xl border transition duration-200 active:scale-95
+                                 {{ selectedPaymentMethods().includes(method) ? 'bg-[#f0c355]/20 border-[#f0c355] text-[#2a2a18]' : 'bg-gray-50 border-gray-100 text-gray-500 hover:bg-gray-100/50' }}">
+                    @if (method === 'Cash') {
+                      <div class="relative w-12 h-8 rounded-lg bg-[#ebf9f1] border border-[#a1ebd2]/60 flex items-center justify-center overflow-hidden mb-0.5">
+                        <div class="w-8 h-4.5 rounded bg-[#48c78e] relative flex items-center justify-center shadow-xs">
+                          <div class="absolute top-0.5 left-0.5 w-1 h-1 rounded-full bg-white/40"></div>
+                          <div class="absolute top-0.5 right-0.5 w-1 h-1 rounded-full bg-white/40"></div>
+                          <div class="absolute bottom-0.5 left-0.5 w-1 h-1 rounded-full bg-white/40"></div>
+                          <div class="absolute bottom-0.5 right-0.5 w-1 h-1 rounded-full bg-white/40"></div>
+                          <div class="w-2.5 h-2.5 rounded-full bg-amber-300 border border-[#48c78e] flex items-center justify-center text-[5px] text-[#2a2a18] font-bold">₹</div>
+                        </div>
+                      </div>
+                    } @else if (method === 'UPI') {
+                      <div class="relative w-12 h-8 rounded-lg bg-[#f0f4f8] border border-[#d0e0f0]/60 flex items-center justify-center overflow-hidden mb-0.5 select-none">
+                        <span class="font-black italic text-xs tracking-tight text-[#0f5499]">UPI</span>
+                        <span class="font-extrabold italic text-xs text-orange-500 ml-0.5">/</span>
+                      </div>
+                    } @else if (method === 'Card') {
+                      <div class="relative w-12 h-8 rounded-lg bg-[#2b2b2b] border border-[#3b3b3b] flex flex-col justify-between p-1.5 overflow-hidden mb-0.5 shadow-xs">
+                        <div class="flex justify-between items-start">
+                          <div class="w-2.5 h-2 rounded bg-amber-400/90 shadow-xs"></div>
+                          <div class="w-2 h-1 bg-white/20 rounded-full"></div>
+                        </div>
+                        <div class="h-1 bg-white/10 rounded-full w-full"></div>
+                      </div>
+                    } @else {
+                      <div class="relative w-12 h-8 rounded-lg bg-[#fdf5f2] border border-[#fbdcd0]/60 flex items-center justify-center overflow-hidden mb-0.5 select-none">
+                        <div class="relative flex items-center justify-center">
+                          <div class="absolute -top-1 w-5 h-3 rounded bg-green-500/70 border border-green-600/40 rotate-12 flex items-center justify-center text-[4px] text-white">₹</div>
+                          <mat-icon class="!text-sm text-amber-900/80 z-10">front_hand</mat-icon>
+                        </div>
+                      </div>
+                    }
+                    <span class="text-[10px] font-bold">{{ method }}</span>
+                  </button>
+                }
+              </div>
+
+              @if (paymentMode() === 'split') {
+                <div class="flex flex-col gap-2.5 mt-2 animate-[slideDown_0.2s_ease]">
+                  @for (method of selectedPaymentMethods(); track method) {
+                    <div class="flex items-center justify-between bg-gray-50 px-4 py-2.5 rounded-2xl border border-gray-100">
+                      <span class="text-xs font-bold text-[#2a2a18]">{{ method }}</span>
+                      <input type="text"
+                             [value]="getSplitAmountValue(method)"
+                             (input)="updateSplitAmount(method, $any($event.target).value)"
+                             class="bg-white border border-gray-200 rounded-xl px-3 py-1.5 text-xs font-bold text-[#2a2a18] text-right w-28 focus:outline-none focus:border-[#f0c355]">
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Notes field -->
+            <div class="bg-white rounded-3xl p-5 border border-[#727339]/10 shadow-sm flex flex-col gap-2.5 relative">
+              <span class="text-xs font-bold text-gray-500">Note</span>
+              <div class="relative">
+                <textarea [value]="checkoutNote()"
+                          (input)="checkoutNote.set($any($event.target).value)"
+                          placeholder="Enter order notes..."
+                          rows="4"
+                          class="w-full bg-gray-50/80 border border-gray-200 rounded-2xl px-4 py-3 pb-16 text-xs font-semibold focus:outline-none focus:border-[#f0c355] resize-none"></textarea>
+                <!-- Floating action panel -->
+                <div class="absolute bottom-3 right-3 bg-white border border-gray-200/80 rounded-2xl p-1 flex items-center gap-1 shadow-sm">
+                  <button class="bg-white hover:bg-gray-50 active:scale-95 text-[#2a2a18] px-3 py-2 rounded-xl text-[10px] font-extrabold flex items-center gap-1.5 transition">
+                    <mat-icon class="!text-xs w-3.5 h-3.5 flex items-center justify-center text-[#2a2a18]">save</mat-icon>
+                    Save
+                  </button>
+                  <div class="w-px h-4 bg-gray-200"></div>
+                  <button class="bg-white hover:bg-gray-50 active:scale-95 text-[#2a2a18] px-3 py-2 rounded-xl text-[10px] font-extrabold flex items-center gap-1.5 transition">
+                    <mat-icon class="!text-xs w-3.5 h-3.5 flex items-center justify-center text-[#2a2a18]">share</mat-icon>
+                    Share
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Checkout Footer -->
+          <footer class="fixed bottom-5 left-0 right-0 z-50 flex justify-center pointer-events-none px-4">
+            <div class="bg-[#2a2a18] border border-white/[0.08] rounded-[26px] p-3
+                        flex items-center justify-between shadow-[0_20px_40px_rgba(42,42,24,0.35)]
+                        pointer-events-auto w-[90%] max-w-[440px] text-white">
+              <span class="text-xs font-bold pl-3">{{ cart().length }} Product{{ cart().length > 1 ? 's' : '' }}</span>
+              <div class="flex items-center gap-1.5">
+                <button (click)="saveBill()"
+                        class="bg-[#f0c355] text-[#2a2a18] font-extrabold text-xs pl-6 pr-4 py-3 rounded-2xl shadow-sm hover:opacity-90 active:scale-95 transition flex items-center gap-3">
+                  Print Bill
+                  <div class="h-4 w-px bg-[#2a2a18]/25"></div>
+                  <mat-icon class="!text-sm">more_vert</mat-icon>
+                </button>
+              </div>
+            </div>
+          </footer>
+        } @else {
+          <!-- BILL SETTINGS PAGE -->
+          <header class="-mx-4 -mt-5 bg-white px-6 py-4 flex items-center justify-between rounded-b-[32px] shadow-sm select-none border-b border-gray-100">
+            <button (click)="isBillSettingsActive.set(false)" class="text-[#2a2a18] hover:opacity-80 transition flex items-center justify-center w-8 h-8 rounded-full bg-gray-50">
+              <mat-icon class="!text-lg font-extrabold">arrow_back</mat-icon>
+            </button>
+            <span class="text-sm font-extrabold text-[#2a2a18]">Bill Settings</span>
+            <div class="w-8 h-8"></div>
+          </header>
+
+          <div class="flex-1 flex flex-col gap-4 mt-5 pb-32 overflow-y-auto max-h-[calc(100vh-160px)] pr-1 select-none">
+            <!-- Shop Logo Card -->
+            <div class="bg-white rounded-3xl p-5 border border-[#727339]/10 shadow-sm flex flex-col gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-500">
+                  <mat-icon>image</mat-icon>
+                </div>
+                <span class="text-xs font-bold text-[#2a2a18]">Shop Logo</span>
+              </div>
+              <div class="border-2 border-dashed border-gray-200 rounded-2xl p-6 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-gray-50/50 transition">
+                <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400">
+                  <mat-icon>photo_camera</mat-icon>
+                </div>
+                <span class="text-xs font-bold text-gray-400">Tap to add logo</span>
+              </div>
+            </div>
+
+            <!-- Phone Number Card -->
+            <div class="bg-white rounded-3xl p-5 border border-[#727339]/10 shadow-sm flex flex-col gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-500">
+                  <mat-icon>phone</mat-icon>
+                </div>
+                <span class="text-xs font-bold text-[#2a2a18]">Phone Number</span>
+              </div>
+              <label class="flex items-center gap-2.5 cursor-pointer">
+                <input type="checkbox"
+                       [checked]="useDefaultPhone()"
+                       (change)="useDefaultPhone.set($any($event.target).checked)"
+                       class="w-5 h-5 rounded border-gray-300 text-amber-500 focus:ring-amber-500 accent-[#f0c355]">
+                <span class="text-xs font-bold text-[#2a2a18]">Use default: 9446731741</span>
+              </label>
+
+              @if (!useDefaultPhone()) {
+                <div class="flex flex-col gap-1.5 animate-[slideDown_0.2s_ease]">
+                  <span class="text-[10px] font-extrabold text-[#2a2a18]">Custom Phone Number</span>
+                  <div class="flex items-center gap-2.5 bg-gray-50 border border-gray-150 rounded-2xl px-4 py-3">
+                    <mat-icon class="text-gray-400 !text-sm">phone</mat-icon>
+                    <input type="text"
+                           [value]="customPhoneNumber()"
+                           (input)="customPhoneNumber.set($any($event.target).value)"
+                           placeholder="Enter custom phone number"
+                           class="bg-transparent border-0 font-semibold text-xs text-[#2a2a18] focus:outline-none w-full">
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Print Settings Card -->
+            <div class="bg-white rounded-3xl p-5 border border-[#727339]/10 shadow-sm flex flex-col gap-4">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-500">
+                    <mat-icon>print</mat-icon>
+                  </div>
+                  <span class="text-xs font-bold text-[#2a2a18]">Print Settings</span>
+                </div>
+                <button class="border border-[#f0c355]/30 bg-amber-50/50 text-[#f0c355] px-4 py-2 rounded-2xl text-[10px] font-bold flex items-center gap-1 hover:bg-[#f0c355]/10 transition">
+                  <mat-icon class="!text-xs">settings</mat-icon>
+                  Configure
+                </button>
+              </div>
+              <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100 flex flex-col gap-1">
+                <span class="text-xs font-extrabold text-[#2a2a18]">19 sections enabled</span>
+                <span class="text-[10px] font-medium text-gray-400">Customize which sections appear on printed bills</span>
+              </div>
+            </div>
+
+            <!-- Charges Card -->
+            <div class="bg-white rounded-3xl p-5 border border-[#727339]/10 shadow-sm flex flex-col gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-500">
+                  <mat-icon>receipt</mat-icon>
+                </div>
+                <span class="text-xs font-bold text-[#2a2a18]">Charges</span>
+              </div>
+
+              <!-- Service Charge -->
+              <div class="flex flex-col gap-2">
+                <div class="bg-gray-50 p-3 rounded-2xl border border-gray-100 flex items-center gap-2">
+                  <mat-icon class="text-amber-500 !text-sm w-4 h-4 flex items-center justify-center">local_offer</mat-icon>
+                  <span class="text-xs font-bold text-[#2a2a18]">Service Charge</span>
+                </div>
+                <div class="flex items-center justify-between bg-gray-50 px-4 py-2 rounded-2xl border border-gray-100">
+                  <div class="flex items-center gap-2">
+                    <mat-icon class="text-gray-400 !text-sm">database</mat-icon>
+                    <input type="number"
+                           [value]="serviceChargeValue()"
+                           (input)="serviceChargeValue.set($any($event.target).value)"
+                           class="bg-transparent border-0 font-bold text-xs text-[#2a2a18] focus:outline-none w-20">
+                  </div>
+                  <input type="checkbox"
+                         [checked]="serviceChargeEnabled()"
+                         (change)="serviceChargeEnabled.set($any($event.target).checked)"
+                         class="w-5 h-5 rounded border-gray-300 text-amber-500 focus:ring-amber-500 accent-[#f0c355]">
+                </div>
+              </div>
+
+              <!-- Delivery Charge -->
+              <div class="flex flex-col gap-2">
+                <div class="bg-gray-50 p-3 rounded-2xl border border-gray-100 flex items-center gap-2">
+                  <mat-icon class="text-amber-500 !text-sm w-4 h-4 flex items-center justify-center">local_offer</mat-icon>
+                  <span class="text-xs font-bold text-[#2a2a18]">Delivery Charge</span>
+                </div>
+                <div class="flex items-center justify-between bg-gray-50 px-4 py-2 rounded-2xl border border-gray-100">
+                  <div class="flex items-center gap-2">
+                    <mat-icon class="text-gray-400 !text-sm">database</mat-icon>
+                    <input type="number"
+                           [value]="deliveryChargeValue()"
+                           (input)="deliveryChargeValue.set($any($event.target).value)"
+                           class="bg-transparent border-0 font-bold text-xs text-[#2a2a18] focus:outline-none w-20">
+                  </div>
+                  <input type="checkbox"
+                         [checked]="deliveryChargeEnabled()"
+                         (change)="deliveryChargeEnabled.set($any($event.target).checked)"
+                         class="w-5 h-5 rounded border-gray-300 text-amber-500 focus:ring-amber-500 accent-[#f0c355]">
+                </div>
+              </div>
+
+              <!-- Packaging Charge -->
+              <div class="flex flex-col gap-2">
+                <div class="bg-gray-50 p-3 rounded-2xl border border-gray-100 flex items-center gap-2">
+                  <mat-icon class="text-amber-500 !text-sm w-4 h-4 flex items-center justify-center">local_offer</mat-icon>
+                  <span class="text-xs font-bold text-[#2a2a18]">Packaging Charge</span>
+                </div>
+                <div class="flex items-center justify-between bg-gray-50 px-4 py-2 rounded-2xl border border-gray-100">
+                  <div class="flex items-center gap-2">
+                    <mat-icon class="text-gray-400 !text-sm">database</mat-icon>
+                    <input type="number"
+                           [value]="packagingChargeValue()"
+                           (input)="packagingChargeValue.set($any($event.target).value)"
+                           class="bg-transparent border-0 font-bold text-xs text-[#2a2a18] focus:outline-none w-20">
+                  </div>
+                  <input type="checkbox"
+                         [checked]="packagingChargeEnabled()"
+                         (change)="packagingChargeEnabled.set($any($event.target).checked)"
+                         class="w-5 h-5 rounded border-gray-300 text-amber-500 focus:ring-amber-500 accent-[#f0c355]">
+                </div>
+              </div>
+            </div>
+
+            <!-- Additional Charges Card -->
+            <div class="bg-white rounded-3xl p-5 border border-[#727339]/10 shadow-sm flex flex-col gap-4">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-500">
+                    <mat-icon>add_circle_outline</mat-icon>
+                  </div>
+                  <span class="text-xs font-bold text-[#2a2a18]">Additional Charges</span>
+                </div>
+                <button class="border border-[#f0c355]/30 bg-amber-50/50 text-[#f0c355] px-4 py-2 rounded-2xl text-[10px] font-bold flex items-center gap-1 hover:bg-[#f0c355]/10 transition">
+                  <span class="text-sm font-bold">+</span>
+                  Add
+                </button>
+              </div>
+              <div class="flex flex-col items-center justify-center py-6 text-center gap-2.5">
+                <mat-icon class="text-gray-300 !text-[40px] w-10 h-10 flex items-center justify-center">receipt_long</mat-icon>
+                <div class="flex flex-col gap-0.5">
+                  <span class="text-xs font-bold text-gray-500">No additional charges</span>
+                  <span class="text-[10px] text-gray-400">Tap Add to create custom charges</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment & Social Card -->
+            <div class="bg-white rounded-3xl p-5 border border-[#727339]/10 shadow-sm flex flex-col gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-500">
+                  <mat-icon>credit_card</mat-icon>
+                </div>
+                <span class="text-xs font-bold text-[#2a2a18]">Payment & Social</span>
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <span class="text-[10px] font-bold text-gray-400">UPI ID</span>
+                <div class="flex items-center gap-2.5 bg-gray-50 border border-gray-150 rounded-2xl px-4 py-3">
+                  <mat-icon class="text-gray-400 !text-sm">account_balance_wallet</mat-icon>
+                  <input type="text"
+                         [value]="upiId()"
+                         (input)="upiId.set($any($event.target).value)"
+                         placeholder="merchant@upi"
+                         class="bg-transparent border-0 font-semibold text-xs text-[#2a2a18] focus:outline-none w-full">
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <span class="text-[10px] font-bold text-gray-400">Instagram URL</span>
+                <div class="flex items-center gap-2.5 bg-gray-50 border border-gray-150 rounded-2xl px-4 py-3">
+                  <mat-icon class="text-gray-400 !text-sm">camera_alt</mat-icon>
+                  <input type="text"
+                         [value]="instagramUrl()"
+                         (input)="instagramUrl.set($any($event.target).value)"
+                         placeholder="https://instagram.com/yourshop"
+                         class="bg-transparent border-0 font-semibold text-xs text-[#2a2a18] focus:outline-none w-full">
+                </div>
+              </div>
+            </div>
+
+            <!-- Bill Note Card -->
+            <div class="bg-white rounded-3xl p-5 border border-[#727339]/10 shadow-sm flex flex-col gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-500">
+                  <mat-icon>note_alt</mat-icon>
+                </div>
+                <span class="text-xs font-bold text-[#2a2a18]">Bill Note</span>
+              </div>
+              <textarea [value]="checkoutNote()"
+                        (input)="checkoutNote.set($any($event.target).value)"
+                        placeholder="Enter custom bill note..."
+                        rows="3"
+                        class="w-full bg-gray-50/80 border border-gray-200 rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[#f0c355] resize-none"></textarea>
+            </div>
+          </div>
+
+          <!-- Save Settings Sticky Footer -->
+          <footer class="fixed bottom-5 left-0 right-0 z-50 flex justify-center pointer-events-none px-4">
+            <button (click)="isBillSettingsActive.set(false)"
+                    class="bg-[#f0c355] text-[#2a2a18] font-extrabold text-xs py-4 rounded-[26px] shadow-2xl hover:opacity-95 active:scale-95 transition pointer-events-auto w-[90%] max-w-[440px] flex items-center justify-center gap-2">
+              <mat-icon class="!text-sm">check</mat-icon>
+              Save Settings
+            </button>
+          </footer>
+        }
+      }
+    </main>
+  }
+
+  <!-- BOTTOM NAV -->
+  @if (!isCheckoutActive() || activeTab() !== 'catalogue') {
+    <app-bottom-nav
+      [active]="(activeTab() === 'catalogue' && isPOSMode()) ? 'pos' : activeTab()"
+      (tabChange)="switchTab($event)"
+      (addInvoice)="addInvoice()" />
+  }
+
+  <!-- ADD / EDIT PRODUCT MODAL DIALOG -->
+  @if (isProductModalOpen()) {
+    <div class="fixed inset-0 bg-black/45 backdrop-blur-xs z-[100] flex items-center justify-center p-4 select-none animate-[fadeIn_0.2s_ease]">
+      <div class="bg-white w-full max-w-[360px] rounded-[32px] p-6 shadow-2xl flex flex-col gap-5 relative animate-[scaleUp_0.2s_ease]">
+        <!-- Title and Close X Button -->
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-extrabold text-[#2a2a18]">{{ editingProduct() ? 'Edit Product' : 'Add Product' }}</h3>
+          <button (click)="closeProductModal()" class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 hover:bg-gray-150 transition">
+            <mat-icon class="!text-base">close</mat-icon>
+          </button>
+        </div>
+
+        <!-- Product Image section -->
+        <div class="flex flex-col items-center gap-2">
+          <span class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Product Image</span>
+          <div class="w-28 h-28 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center gap-1.5 cursor-pointer hover:bg-gray-50 transition">
+            <mat-icon class="text-gray-400 !text-[28px] w-7 h-7 flex items-center justify-center">photo_camera</mat-icon>
+            <span class="text-[10px] font-bold text-gray-400">Add Photo</span>
+          </div>
+        </div>
+
+        <!-- Fields Container -->
+        <div class="flex flex-col gap-4">
+          <!-- Product Name -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[10px] font-extrabold text-[#2a2a18]">Product Name <span class="text-red-500">*</span></label>
+            <input type="text"
+                   [value]="modalProductName()"
+                   (input)="modalProductName.set($any($event.target).value)"
+                   placeholder="Enter product name"
+                   class="w-full bg-gray-50/80 border border-gray-200 rounded-xl px-4 py-3 text-[#2a2a18] text-xs font-bold focus:outline-none focus:border-[#f0c355]">
+          </div>
+
+          <!-- Product Category with + New Button -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[10px] font-extrabold text-[#2a2a18]">Product Category <span class="text-red-500">*</span></label>
+            <div class="flex gap-2">
+              <div class="flex-1 relative">
+                <select [value]="modalProductCategory()"
+                        (change)="modalProductCategory.set($any($event.target).value)"
+                        class="w-full bg-gray-50/80 border border-gray-200 rounded-xl pl-4 pr-10 py-3 text-[#2a2a18] text-xs font-bold focus:outline-none focus:border-[#f0c355] appearance-none cursor-pointer">
+                  @for (cat of categories(); track cat) {
+                    @if (cat !== 'All' && cat !== 'Favorites') {
+                      <option [value]="cat">{{ cat }}</option>
+                    }
+                  }
+                </select>
+                <mat-icon class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none !text-base">expand_more</mat-icon>
+              </div>
+              <button (click)="addNewCategory()"
+                      class="bg-[#f0c355] hover:opacity-90 active:scale-95 text-[#2a2a18] px-4 rounded-xl text-xs font-extrabold flex items-center justify-center gap-1 transition">
+                <span>+</span> New
+              </button>
+            </div>
+          </div>
+
+          <!-- Selling Price -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[10px] font-extrabold text-[#2a2a18]">Selling Price <span class="text-red-500">*</span></label>
+            <input type="number"
+                   [value]="modalProductPrice()"
+                   (input)="modalProductPrice.set($any($event.target).valueAsNumber)"
+                   placeholder="0.00"
+                   class="w-full bg-gray-50/80 border border-gray-200 rounded-xl px-4 py-3 text-[#2a2a18] text-xs font-bold focus:outline-none focus:border-[#f0c355]">
+          </div>
+
+          <!-- Quantity & Unit selector -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[10px] font-extrabold text-[#2a2a18]">Quantity <span class="text-red-500">*</span></label>
+            <div class="flex gap-2">
+              <input type="number"
+                     [value]="modalProductQuantity()"
+                     (input)="modalProductQuantity.set($any($event.target).valueAsNumber)"
+                     placeholder="100"
+                     class="flex-1 bg-gray-50/80 border border-gray-200 rounded-xl px-4 py-3 text-[#2a2a18] text-xs font-bold focus:outline-none focus:border-[#f0c355]">
+              <div class="w-32 relative">
+                <select [value]="modalProductUnit()"
+                        (change)="modalProductUnit.set($any($event.target).value)"
+                        class="w-full bg-gray-50/80 border border-gray-200 rounded-xl pl-4 pr-10 py-3 text-[#2a2a18] text-xs font-bold focus:outline-none focus:border-[#f0c355] appearance-none cursor-pointer">
+                  <option value="Pieces">Pieces</option>
+                  <option value="Pcs">Pcs</option>
+                  <option value="Kg">Kg</option>
+                  <option value="Litre">Litre</option>
+                </select>
+                <mat-icon class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none !text-base">expand_more</mat-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col gap-2.5 mt-2">
+          <!-- Update / Add Product button -->
+          <button (click)="saveProduct()"
+                  class="w-full bg-[#48c78e] hover:opacity-90 active:scale-95 text-white py-3.5 rounded-2xl text-xs font-extrabold transition flex items-center justify-center gap-1.5 shadow-sm">
+            <mat-icon class="!text-sm">check</mat-icon>
+            {{ editingProduct() ? 'Update Product' : 'Add Product' }}
+          </button>
+          
+          <!-- Delete button (only when editing) -->
+          @if (editingProduct()) {
+            <button (click)="deleteProduct()"
+                    class="w-full bg-[#f14a4a] hover:opacity-90 active:scale-95 text-white py-3.5 rounded-2xl text-xs font-extrabold transition flex items-center justify-center gap-1.5 shadow-sm">
+              <mat-icon class="!text-sm">delete</mat-icon>
+              Delete Product
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

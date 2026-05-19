@@ -1,0 +1,1027 @@
+/* 
+  QuickPOS / GulGusto Component Stylesheet
+  Brand Palette: #727339 (Olive) | #f1e1c8 (Cream) | #632a85 (Purple)
+*/
+
+.app-container {
+  display: block;
+  width: 100vw;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: #f1e1c8 !important;
+}
+
+/* ==========================================================================
+   PAGE 1: RESPONSIVE HERO VIDEO WELCOME SCREEN
+   ========================================================================== */
+.full-video-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  overflow: hidden;
+  background: #f1e1c8;
+}
+
+.onboarding-video-full {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.video-overlay-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(99, 42, 133, 0.35) 0%, transparent 50%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Small pill button anchored at the bottom center of the video */
+.welcome-explore-badge {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  background: rgba(99, 42, 133, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  padding: 11px 24px;
+  border-radius: 30px;
+  font-size: 13.5px;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(99, 42, 133, 0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.welcome-explore-badge:hover {
+  background: rgba(99, 42, 133, 1);
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 12px 28px rgba(99, 42, 133, 0.6);
+}
+
+.welcome-explore-badge:active {
+  transform: translateX(-50%) scale(0.97);
+}
+
+
+/* ==========================================================================
+   PAGE 2: HIGH-FIDELITY RESPONSIVE POS DASHBOARD
+   ========================================================================== */
+.dashboard-screen {
+  flex: 1;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f1e1c8;
+  z-index: 20;
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.99); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Top Navigation Bar */
+.desktop-topbar {
+  background: #727339;
+  border-bottom: none;
+  padding: 16px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 30;
+  box-shadow: 0 4px 20px rgba(114, 115, 57, 0.25);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo-circle {
+  width: 40px;
+  height: 40px;
+  background: #632a85;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(99, 42, 133, 0.35);
+}
+
+.brand-logo-circle svg {
+  width: 20px;
+  height: 20px;
+}
+
+.brand-text-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-name {
+  font-size: 16.5px;
+  font-weight: 800;
+  color: #f1e1c8;
+  letter-spacing: -0.3px;
+}
+
+.brand-date {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: rgba(241, 225, 200, 0.7);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.showcase-back-btn {
+  background: rgba(241, 225, 200, 0.15);
+  border: 1px solid rgba(241, 225, 200, 0.25);
+  color: #f1e1c8;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.showcase-back-btn:hover {
+  background: rgba(241, 225, 200, 0.25);
+}
+
+.theme-switch-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: rgba(241, 225, 200, 0.15);
+  border: 1px solid rgba(241, 225, 200, 0.25);
+  color: #f1e1c8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.theme-switch-btn:hover {
+  background: rgba(241, 225, 200, 0.25);
+}
+
+/* Main Layout Grid */
+.dashboard-main-content {
+  flex: 1;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 24px 100px 24px;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 28px;
+  align-items: start;
+}
+
+/* Today's Sales Summary Panel — Purple gradient */
+.summary-sales-panel {
+  background: linear-gradient(135deg, #7b35a3 0%, #4e2069 100%);
+  border-radius: 24px;
+  padding: 28px 32px;
+  color: #FFFFFF;
+  box-shadow: 0 15px 35px -5px rgba(99, 42, 133, 0.3);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.summary-sales-panel::after {
+  content: '';
+  position: absolute;
+  top: -20%;
+  right: -10%;
+  width: 180px;
+  height: 180px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.sales-panel-label {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: rgba(241, 225, 200, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.sales-val-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.sales-panel-val {
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.eye-toggle-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.eye-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.eye-toggle-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.sales-tagline {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(241, 225, 200, 0.75);
+}
+
+/* Submetric Cards — Olive dark */
+.responsive-metrics-subgrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.submetric-card {
+  background: #727339;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #f1e1c8;
+  box-shadow: 0 10px 25px rgba(114, 115, 57, 0.2);
+}
+
+.submetric-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(241, 225, 200, 0.75);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.submetric-label svg {
+  width: 14px;
+  height: 14px;
+  color: #c88aff;
+}
+
+.submetric-val {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+/* Right Column Card — Cream toned */
+.tabular-tx-card {
+  background: rgba(255, 255, 255, 0.65);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 10px 30px rgba(114, 115, 57, 0.08);
+  border: 1px solid rgba(114, 115, 57, 0.12);
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Invoice Viewport */
+.invoice-viewport-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+}
+
+.viewport-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 18px;
+  border-bottom: 1px solid rgba(114, 115, 57, 0.15);
+  padding-bottom: 12px;
+}
+
+.viewport-header h3 {
+  font-size: 15px;
+  font-weight: 800;
+  color: #2a2a18;
+}
+
+.sync-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #632a85;
+  background: rgba(99, 42, 133, 0.08);
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  background: #632a85;
+  border-radius: 50%;
+  animation: pulseDot 2s infinite;
+}
+
+@keyframes pulseDot {
+  0%   { transform: scale(0.9); box-shadow: 0 0 0 0px rgba(99, 42, 133, 0.5); }
+  70%  { transform: scale(1);   box-shadow: 0 0 0 6px rgba(99, 42, 133, 0); }
+  100% { transform: scale(0.9); box-shadow: 0 0 0 0px rgba(99, 42, 133, 0); }
+}
+
+.invoice-list-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* Scrollbar themed */
+.invoice-list-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.invoice-list-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.invoice-list-scroll::-webkit-scrollbar-thumb {
+  background: rgba(99, 42, 133, 0.25);
+  border-radius: 4px;
+}
+
+.invoice-row-item {
+  background: #f1e1c8;
+  border: 1px solid rgba(114, 115, 57, 0.1);
+  border-radius: 16px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  animation: slideRow 0.3s ease-out forwards;
+}
+
+@keyframes slideRow {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.invoice-row-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Olive-toned check icon instead of green */
+.row-icon-green {
+  width: 36px;
+  height: 36px;
+  background: rgba(99, 42, 133, 0.1);
+  color: #632a85;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.row-icon-green svg {
+  width: 16px;
+  height: 16px;
+}
+
+.row-text-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.row-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #2a2a18;
+}
+
+.row-time {
+  font-size: 11px;
+  font-weight: 500;
+  color: #727339;
+}
+
+.row-amount {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #632a85;
+}
+
+.viewport-footer-actions {
+  margin-top: auto;
+  padding-top: 18px;
+  display: flex;
+}
+
+/* Add Invoice Button — Purple */
+.sim-invoice-btn {
+  background: rgba(99, 42, 133, 0.08);
+  border: 1px solid rgba(99, 42, 133, 0.2);
+  color: #632a85;
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  margin: 0 auto;
+}
+
+.sim-invoice-btn:hover {
+  background: rgba(99, 42, 133, 0.14);
+}
+
+.sim-invoice-btn:active {
+  transform: scale(0.96);
+}
+
+.sim-invoice-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.sim-invoice-btn.loading svg {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.sim-invoice-btn.orange-theme {
+  background: linear-gradient(135deg, #7b35a3 0%, #4e2069 100%);
+  color: #FFFFFF;
+  border: none;
+  box-shadow: 0 10px 20px rgba(99, 42, 133, 0.25);
+  margin-top: 12px;
+}
+
+.sim-invoice-btn.orange-theme:hover {
+  box-shadow: 0 12px 24px rgba(99, 42, 133, 0.4);
+  transform: translateY(-1px);
+}
+
+
+/* ==========================================================================
+   FLUID BOTTOM NAVIGATION BAR — Olive dark
+   ========================================================================== */
+.fluid-bottom-bar {
+  position: fixed;
+  bottom: 24px;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.fluid-nav-container {
+  background: #727339;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 26px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 20px 40px rgba(114, 115, 57, 0.3);
+  pointer-events: auto;
+  width: 90%;
+  max-width: 440px;
+}
+
+.fluid-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: rgba(241, 225, 200, 0.55);
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 8px 4px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.fluid-nav-item:hover {
+  color: #f1e1c8;
+}
+
+.fluid-nav-item.active {
+  color: #c88aff;
+}
+
+.fluid-nav-item svg {
+  width: 20px;
+  height: 20px;
+}
+
+.fluid-nav-item-center {
+  flex: 0 0 54px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Purple floating center button */
+.nav-center-circle {
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, #7b35a3 0%, #4e2069 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(99, 42, 133, 0.4);
+  margin-top: -24px;
+  border: 4px solid #727339;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-center-circle:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 20px rgba(99, 42, 133, 0.6);
+}
+
+.nav-center-circle:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.nav-center-circle svg {
+  width: 22px;
+  height: 22px;
+}
+
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+@media (max-width: 900px) {
+  .dashboard-main-content {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 24px 16px 90px 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .desktop-topbar {
+    padding: 12px 16px;
+  }
+
+  .sales-panel-val {
+    font-size: 28px;
+  }
+
+  .submetric-val {
+    font-size: 18px;
+  }
+}
+
+
+/* ==========================================================================
+   REPORTS PAGE STYLES
+   ========================================================================== */
+.reports-page {
+  flex: 1;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 20px 100px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: fadeIn 0.35s ease forwards;
+}
+
+/* Date Filter Pill Tabs */
+.rpt-date-tabs {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: 10px 16px;
+  box-shadow: 0 4px 16px rgba(114, 115, 57, 0.07);
+  border: 1px solid rgba(114, 115, 57, 0.1);
+}
+
+.rpt-date-tab {
+  background: #727339;
+  color: #f1e1c8;
+  border: none;
+  border-radius: 14px;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.rpt-date-tab.active {
+  background: #727339;
+  color: #f1e1c8;
+}
+
+.rpt-date-range {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  justify-content: center;
+}
+
+.rpt-date-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rpt-date-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #2a2a18;
+}
+
+.rpt-date-time {
+  font-size: 11px;
+  font-weight: 500;
+  color: #727339;
+}
+
+.rpt-date-sep {
+  color: #a09a6e;
+  font-size: 14px;
+}
+
+/* Revenue Summary Card */
+.rpt-revenue-card {
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(114, 115, 57, 0.07);
+  border: 1px solid rgba(114, 115, 57, 0.08);
+}
+
+.rpt-revenue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.rpt-revenue-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #727339;
+}
+
+.rpt-sales-badge {
+  background: #727339;
+  color: #f1e1c8;
+  padding: 5px 14px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.rpt-revenue-amount {
+  font-size: 32px;
+  font-weight: 800;
+  color: #2a2a18;
+  letter-spacing: -1px;
+  margin-bottom: 8px;
+}
+
+.rpt-show-calc {
+  background: none;
+  border: none;
+  color: #727339;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  margin-bottom: 16px;
+  transition: opacity 0.2s;
+}
+
+.rpt-show-calc:hover { opacity: 0.7; }
+
+/* Calculation breakdown */
+.rpt-calc-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+  animation: slideRow 0.25s ease;
+}
+
+.rpt-calc-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13.5px;
+  color: #2a2a18;
+}
+
+.rpt-calc-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.rpt-calc-label {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #555;
+}
+
+.rpt-calc-label-bold {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #2a2a18;
+}
+
+.rpt-calc-val {
+  font-weight: 600;
+  color: #2a2a18;
+  font-size: 13.5px;
+}
+
+.rpt-calc-val-bold {
+  font-weight: 800;
+  color: #2a2a18;
+  font-size: 13.5px;
+}
+
+.rpt-calc-total {
+  padding: 4px 0;
+}
+
+.rpt-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.rpt-dot.olive { background: #727339; }
+.rpt-dot.dark  { background: #2a2a18; }
+
+.rpt-calc-val {
+  font-weight: 700;
+  color: #2a2a18;
+}
+
+.rpt-divider {
+  height: 1px;
+  background: rgba(114, 115, 57, 0.12);
+  margin: 12px 0;
+}
+
+/* Discount / Expense sub row */
+.rpt-sub-metrics {
+  display: flex;
+  align-items: center;
+}
+
+.rpt-sub-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.rpt-sub-divider {
+  width: 1px;
+  height: 36px;
+  background: rgba(114, 115, 57, 0.15);
+}
+
+.rpt-sub-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #727339;
+}
+
+.rpt-sub-val {
+  font-size: 15px;
+  font-weight: 800;
+  color: #2a2a18;
+}
+
+/* Section Cards (Key Reports + All Reports) */
+.rpt-section-card {
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(114, 115, 57, 0.07);
+  border: 1px solid rgba(114, 115, 57, 0.08);
+}
+
+.rpt-section-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #2a2a18;
+  margin-bottom: 20px;
+}
+
+/* Key Reports List */
+.rpt-key-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.rpt-key-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(114, 115, 57, 0.1);
+}
+
+.rpt-key-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rpt-key-icon-box svg {
+  width: 22px;
+  height: 22px;
+}
+
+.rpt-key-icon-box.olive  { background: rgba(114, 115, 57, 0.12); color: #727339; }
+.rpt-key-icon-box.purple { background: rgba(99, 42, 133, 0.1);   color: #632a85; }
+.rpt-key-icon-box.cream  { background: #f1e1c8;                   color: #727339; }
+
+.rpt-key-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rpt-key-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #2a2a18;
+}
+
+.rpt-key-desc {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #727339;
+}
+
+.rpt-key-amount {
+  font-size: 14px;
+  font-weight: 800;
+  color: #2a2a18;
+}
+
+/* All Reports 2-Column Grid */
+.rpt-all-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.rpt-grid-item {
+  background: #f9f6f0;
+  border: 1px solid rgba(114, 115, 57, 0.1);
+  border-radius: 18px;
+  padding: 20px 16px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.rpt-grid-item:hover {
+  background: #f1e1c8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(114, 115, 57, 0.12);
+}
+
+.rpt-grid-item span {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #2a2a18;
+}
+
+.rpt-grid-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rpt-grid-icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.rpt-grid-icon.olive  { background: rgba(114, 115, 57, 0.12); color: #727339; }
+.rpt-grid-icon.purple { background: rgba(99, 42, 133, 0.1);   color: #632a85; }
+.rpt-grid-icon.green  { background: rgba(22, 163, 74, 0.1);   color: #16a34a; }
+.rpt-grid-icon.pink   { background: rgba(236, 72, 153, 0.1);  color: #ec4899; }
+
+@media (max-width: 600px) {
+  .reports-page { padding: 16px 14px 90px 14px; }
+  .rpt-all-grid  { gap: 12px; }
+}

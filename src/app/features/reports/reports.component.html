@@ -1,0 +1,1386 @@
+<main class="flex-1 w-full max-w-3xl mx-auto px-4 pt-5 pb-28 flex flex-col gap-5">
+
+  @if (activeReportView() === 'list') {
+    <!-- Date tabs -->
+    <div (click)="openDatePicker()" class="cursor-pointer flex items-center gap-3 bg-white rounded-2xl px-4 py-2.5
+                shadow-md shadow-[#727339]/[0.07] border border-[#727339]/10 transition hover:bg-gray-50 active:scale-[0.98]">
+      <button class="bg-[#f0c355] text-[#2a2a18] rounded-xl px-5 py-2.5
+                     text-sm font-extrabold whitespace-nowrap pointer-events-none">Today</button>
+    <div class="flex-1 flex justify-center items-center gap-3">
+      <div class="flex flex-col items-center">
+        <span class="text-sm font-bold text-[#2a2a18]">{{ startDateStr() }}</span>
+        <span class="text-[11px] font-medium text-[#727339]">{{ appliedStartTime() }}</span>
+      </div>
+      <span class="text-[#a09a6e]">—</span>
+      <div class="flex flex-col items-center">
+        <span class="text-sm font-bold text-[#2a2a18]">{{ endDateStr() }}</span>
+        <span class="text-[11px] font-medium text-[#727339]">{{ appliedEndTime() }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Total Revenue card -->
+  <div class="bg-white rounded-2xl p-6 shadow-md shadow-[#727339]/[0.07] border border-[#727339]/[0.08]">
+    <div class="flex justify-between items-center mb-2">
+      <span class="text-xs font-semibold text-[#727339]">Total Revenue</span>
+      <span class="bg-[#727339] text-[#f1e1c8] text-xs font-extrabold px-3.5 py-1 rounded-full">
+        {{ pos.billsCount() }} Sales
+      </span>
+    </div>
+
+    <div class="text-3xl font-extrabold text-[#2a2a18] tracking-tight mb-2">
+      {{ pos.salesDisplay() }}
+    </div>
+
+    <button (click)="toggleCalc()"
+            class="flex items-center gap-1.5 text-[#727339] text-xs font-semibold
+                   hover:opacity-70 transition mb-3">
+      {{ isCalcVisible() ? '▼' : '▶' }} Show calculation
+    </button>
+
+    @if (isCalcVisible()) {
+      <div class="animate-[slideIn_0.25s_ease]">
+        <div class="h-px bg-[#727339]/12 mb-3"></div>
+        <div class="flex justify-between text-[13px] mb-2">
+          <span class="text-[#555] font-medium">Total Sales (excl. Credit)</span>
+          <span class="font-semibold text-[#2a2a18]">{{ pos.salesDisplay() }}</span>
+        </div>
+        <div class="flex justify-between text-[13px] mb-3">
+          <span class="text-[#555] font-medium">Credit Settled</span>
+          <span class="font-semibold text-[#2a2a18]">₹0.00</span>
+        </div>
+        <div class="h-px bg-[#727339]/12 mb-3"></div>
+        <div class="flex justify-between text-[13px]">
+          <span class="font-extrabold text-[#2a2a18]">Total Revenue</span>
+          <span class="font-extrabold text-[#2a2a18]">{{ pos.salesDisplay() }}</span>
+        </div>
+      </div>
+    }
+
+    <div class="h-px bg-[#727339]/12 mt-4 mb-4"></div>
+    <div class="flex">
+      <div class="flex-1 flex flex-col items-center gap-1">
+        <span class="text-xs font-semibold text-[#727339]">Discount</span>
+        <span class="text-base font-extrabold text-[#2a2a18]">₹0.00</span>
+      </div>
+      <div class="w-px bg-[#727339]/15"></div>
+      <div class="flex-1 flex flex-col items-center gap-1">
+        <span class="text-xs font-semibold text-[#727339]">Expense</span>
+        <span class="text-base font-extrabold text-[#2a2a18]">₹0.00</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Reports -->
+  <div class="bg-white rounded-2xl p-6 shadow-md shadow-[#727339]/[0.07] border border-[#727339]/[0.08]">
+    <h3 class="text-base font-extrabold text-[#2a2a18] mb-4">Key Reports</h3>
+    <div class="flex flex-col divide-y divide-[#727339]/10">
+      @for (r of keyReports; track r.label) {
+        <div matRipple (click)="r.label === 'Sales Report' ? activeReportView.set('sales') : 
+                               r.label === 'Attendee Report' ? activeReportView.set('attendee') : 
+                               r.label === 'Order Types' ? activeReportView.set('order-type') : null"
+             class="flex items-center gap-3.5 py-3.5 cursor-pointer hover:bg-gray-50 transition-colors px-2 -mx-2 rounded-xl">
+          <div class="w-11 h-11 rounded-[14px] flex items-center justify-center flex-shrink-0"
+               [class]="r.color === 'olive' ? 'bg-[#727339]/12 text-[#727339]'
+                       : r.color === 'purple' ? 'bg-[#632a85]/10 text-[#632a85]'
+                       : 'bg-[#f1e1c8] text-[#727339]'">
+            <mat-icon class="!text-[22px]">{{ r.icon }}</mat-icon>
+          </div>
+          <div class="flex-1">
+            <p class="text-sm font-bold text-[#2a2a18]">{{ r.label }}</p>
+            <p class="text-[11px] font-medium text-[#727339]">{{ r.desc }}</p>
+          </div>
+          <span class="text-sm font-extrabold text-[#2a2a18]">
+            {{ r.label === 'Sales Report' ? pos.salesDisplay() : '—' }}
+          </span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- All Reports Grid -->
+  <div class="bg-white rounded-2xl p-6 shadow-md shadow-[#727339]/[0.07] border border-[#727339]/[0.08]">
+    <h3 class="text-base font-extrabold text-[#2a2a18] mb-4">All Reports</h3>
+    <div class="grid grid-cols-2 gap-3.5">
+      @for (r of allReports; track r.label) {
+        <div matRipple
+         (click)="openReport(r.label)"
+             class="flex flex-col items-center gap-3 py-5 px-3 rounded-[18px]
+                    bg-[#f9f6f0] border border-[#727339]/10 cursor-pointer text-center
+                    transition-all hover:bg-[#f1e1c8] hover:-translate-y-0.5
+                    hover:shadow-lg hover:shadow-[#727339]/12 active:scale-95">
+          <div class="w-14 h-14 rounded-2xl flex items-center justify-center"
+               [class]="r.color === 'olive'  ? 'bg-[#727339]/12 text-[#727339]'
+                       : r.color === 'purple' ? 'bg-[#632a85]/10 text-[#632a85]'
+                       : r.color === 'green'  ? 'bg-green-100 text-green-700'
+                       : 'bg-pink-100 text-pink-600'">
+            <mat-icon class="!text-[26px]">{{ r.icon }}</mat-icon>
+          </div>
+          <span class="text-[12.5px] font-bold text-[#2a2a18]">{{ r.label }}</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  } @else if (activeReportView() === 'sales') {
+    
+    <!-- Sales Report Header -->
+    <div class="flex items-center justify-between mt-2 mb-2">
+      <div class="flex items-center gap-3">
+        <button (click)="activeReportView.set('list')" class="w-9 h-9 flex items-center justify-center bg-gray-100/50 rounded-full hover:bg-gray-200 transition">
+          <mat-icon class="!text-[22px]">arrow_back</mat-icon>
+        </button>
+        <h2 class="text-[22px] font-extrabold text-[#2a2a18]">Sales Report</h2>
+      </div>
+      <button class="w-[42px] h-[42px] bg-[#f0c355] rounded-xl flex items-center justify-center text-[#2a2a18] shadow-md shadow-[#f0c355]/30 active:scale-95 transition">
+        <mat-icon class="!text-[22px]">download</mat-icon>
+      </button>
+    </div>
+
+    <!-- Date tabs -->
+    <div (click)="openDatePicker()" class="cursor-pointer flex items-center gap-3 bg-white rounded-2xl px-4 py-2.5
+                shadow-md shadow-[#727339]/[0.07] border border-[#727339]/10 transition hover:bg-gray-50 active:scale-[0.98]">
+      <button class="bg-[#f0c355] text-[#2a2a18] rounded-xl px-5 py-2.5
+                     text-sm font-extrabold whitespace-nowrap pointer-events-none">Today</button>
+      <div class="flex-1 flex justify-center items-center gap-3">
+        <div class="flex flex-col items-center">
+          <span class="text-sm font-bold text-[#2a2a18]">{{ startDateStr() }}</span>
+          <span class="text-[11px] font-medium text-[#727339]">{{ appliedStartTime() }}</span>
+        </div>
+        <span class="text-[#a09a6e]">—</span>
+        <div class="flex flex-col items-center">
+          <span class="text-sm font-bold text-[#2a2a18]">{{ endDateStr() }}</span>
+          <span class="text-[11px] font-medium text-[#727339]">{{ appliedEndTime() }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Methods -->
+    <div class="bg-white rounded-2xl p-5 shadow-md shadow-[#727339]/[0.07] border border-[#727339]/10">
+      <h3 class="text-[15px] font-extrabold text-[#2a2a18] mb-3.5">Payment Methods</h3>
+      <div class="flex gap-2">
+        <button class="bg-[#f0c355] text-[#2a2a18] px-6 py-2 rounded-full text-[13px] font-bold shadow-md shadow-[#f0c355]/20">All</button>
+      </div>
+    </div>
+
+    <!-- Sort By -->
+    <div class="bg-white rounded-2xl p-5 shadow-md shadow-[#727339]/[0.07] border border-[#727339]/10">
+      <h3 class="text-[15px] font-extrabold text-[#2a2a18] mb-3.5">Sort By</h3>
+      <button (click)="isSortSheetOpen.set(true)" 
+              class="w-full bg-[#f9f9f9] border border-gray-200 rounded-[14px] px-4 py-3.5 
+                     flex items-center justify-between text-[#2a2a18] text-[13px] font-semibold hover:bg-gray-50 transition active:scale-[0.99]">
+        <div class="flex items-center gap-2.5 text-gray-500">
+          <mat-icon class="!text-[20px]">sort</mat-icon>
+          <span>{{ sortOption() }}</span>
+        </div>
+        <mat-icon class="!text-[20px] text-gray-500">expand_more</mat-icon>
+      </button>
+    </div>
+
+    <!-- Owner Bills Card -->
+    <div class="bg-white rounded-[24px] p-6 shadow-md shadow-[#727339]/[0.07] border border-[#727339]/10 mt-1">
+      <div class="flex items-center gap-3.5 mb-6">
+        <div class="w-12 h-12 bg-[#f0c355] rounded-[18px] flex items-center justify-center text-white shadow-md shadow-[#f0c355]/30">
+          <mat-icon class="!text-[26px]">storefront</mat-icon>
+        </div>
+        <span class="text-[14px] font-medium text-gray-500">Owner Bills</span>
+      </div>
+      
+      <div class="flex flex-col items-center mb-6">
+        <span class="text-[32px] font-extrabold text-[#2a2a18] leading-none mb-1">0</span>
+        <span class="text-[12px] font-medium text-gray-400">Bills</span>
+      </div>
+      
+      <div class="border-t border-gray-100 pt-5 flex justify-center">
+        <span class="text-[18px] font-extrabold text-[#2a2a18]">₹0.00</span>
+      </div>
+    </div>
+
+  } @else if (activeReportView() === 'attendee') {
+    
+    <!-- Attendee Report Header -->
+    <div class="flex items-center gap-4 mt-2 mb-4">
+      <button (click)="activeReportView.set('list')" class="w-10 h-10 flex items-center justify-center text-[#2a2a18] hover:bg-gray-100 rounded-full transition active:scale-95">
+        <mat-icon class="!text-[24px]">arrow_back</mat-icon>
+      </button>
+      <div class="flex flex-col">
+        <h2 class="text-[22px] font-extrabold text-[#2a2a18] leading-tight">Attendee Report</h2>
+        <span class="text-[13px] font-medium text-gray-500">Revenue Analysis & Bill Distribution</span>
+      </div>
+    </div>
+
+    <!-- Date tabs -->
+    <div (click)="openDatePicker()" class="cursor-pointer flex items-center gap-3 bg-[#f7f7f7] rounded-2xl p-2
+                border border-gray-200 transition hover:bg-gray-50 active:scale-[0.98] mb-5">
+      <button class="bg-[#f0c355] text-[#2a2a18] rounded-[14px] px-6 py-3
+                     text-sm font-extrabold whitespace-nowrap pointer-events-none shadow-sm shadow-[#f0c355]/20">Today</button>
+      <div class="flex-1 flex justify-center items-center gap-3">
+        <div class="flex flex-col items-center">
+          <span class="text-[14px] font-extrabold text-[#2a2a18]">{{ startDateStr() }}</span>
+          <span class="text-[12px] font-medium text-gray-500 mt-0.5">{{ appliedStartTime() }}</span>
+        </div>
+        <div class="w-[18px] h-[18px] rounded-full bg-white relative -mx-1 z-10 border border-gray-100 flex-shrink-0"></div>
+        <div class="flex flex-col items-center">
+          <span class="text-[14px] font-extrabold text-[#2a2a18]">{{ endDateStr() }}</span>
+          <span class="text-[12px] font-medium text-gray-500 mt-0.5">{{ appliedEndTime() }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4-Grid -->
+    <div class="grid grid-cols-2 gap-3.5 mb-8">
+      <div class="bg-white border border-gray-200 rounded-[20px] p-5 flex flex-col items-center text-center shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+        <mat-icon class="!text-[24px] text-[#f0c355] mb-2.5">receipt</mat-icon>
+        <span class="text-[22px] font-extrabold text-[#2a2a18] leading-none mb-1.5">0</span>
+        <span class="text-[12px] font-medium text-gray-500">Total Bills</span>
+      </div>
+      
+      <div class="bg-white border border-gray-200 rounded-[20px] p-5 flex flex-col items-center text-center shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+        <mat-icon class="!text-[24px] text-[#f0c355] mb-2.5">payments</mat-icon>
+        <span class="text-[22px] font-extrabold text-[#2a2a18] leading-none mb-1.5">₹0.00</span>
+        <span class="text-[12px] font-medium text-gray-500">Total Revenue</span>
+      </div>
+
+      <div class="bg-white border border-gray-200 rounded-[20px] p-5 flex flex-col items-center text-center shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+        <mat-icon class="!text-[24px] text-gray-600 mb-2.5">groups</mat-icon>
+        <span class="text-[22px] font-extrabold text-[#2a2a18] leading-none mb-1.5">0</span>
+        <span class="text-[12px] font-medium text-gray-500">Attendees</span>
+      </div>
+
+      <div class="bg-white border border-gray-200 rounded-[20px] p-5 flex flex-col items-center text-center shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+        <mat-icon class="!text-[24px] text-gray-600 mb-2.5">trending_up</mat-icon>
+        <span class="text-[22px] font-extrabold text-[#2a2a18] leading-none mb-1.5">₹0.00</span>
+        <span class="text-[12px] font-medium text-gray-500">Avg Bill Value</span>
+      </div>
+    </div>
+
+    <!-- Attendee Details Section -->
+    <div class="mb-5">
+      <h3 class="text-[17px] font-extrabold text-[#2a2a18]">Attendee Details</h3>
+      <p class="text-[13px] font-medium text-gray-500">Tap any attendee to view their bills</p>
+    </div>
+
+    <!-- Empty State -->
+    <div class="bg-white rounded-[28px] p-12 flex flex-col items-center text-center shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
+      <div class="w-[84px] h-[84px] bg-gray-50 rounded-full flex items-center justify-center mb-6 border border-gray-100">
+        <mat-icon class="!text-[46px] text-gray-300 w-[46px] h-[46px] leading-[46px]">groups</mat-icon>
+      </div>
+      <h4 class="text-[16px] font-extrabold text-gray-400 mb-2">No attendees available</h4>
+      <p class="text-[13px] font-semibold text-gray-300 leading-relaxed max-w-[200px]">Attendees will appear here once bills are created</p>
+    </div>
+
+  } @else if (activeReportView() === 'order-type') {
+    
+    <!-- Order Types Header -->
+    <div class="flex items-center gap-4 mt-2 mb-4">
+      <button (click)="activeReportView.set('list')" class="w-10 h-10 flex items-center justify-center text-[#2a2a18] hover:bg-gray-100 rounded-full transition active:scale-95">
+        <mat-icon class="!text-[24px]">arrow_back</mat-icon>
+      </button>
+      <div class="flex flex-col">
+        <h2 class="text-[22px] font-extrabold text-[#2a2a18] leading-tight">Order Types</h2>
+        <span class="text-[13px] font-medium text-gray-500">Revenue Analysis & Distribution</span>
+      </div>
+    </div>
+
+    <!-- Date tabs -->
+    <div (click)="openDatePicker()" class="cursor-pointer flex items-center gap-3 bg-[#f7f7f7] rounded-2xl p-2
+                border border-gray-200 transition hover:bg-gray-50 active:scale-[0.98] mb-5">
+      <button class="bg-[#f0c355] text-[#2a2a18] rounded-[14px] px-6 py-3
+                     text-sm font-extrabold whitespace-nowrap pointer-events-none shadow-sm shadow-[#f0c355]/20">Today</button>
+      <div class="flex-1 flex justify-center items-center gap-3">
+        <div class="flex flex-col items-center">
+          <span class="text-[14px] font-extrabold text-[#2a2a18]">{{ startDateStr() }}</span>
+          <span class="text-[12px] font-medium text-gray-500 mt-0.5">{{ appliedStartTime() }}</span>
+        </div>
+        <div class="w-[18px] h-[18px] rounded-full bg-white relative -mx-1 z-10 border border-gray-100 flex-shrink-0"></div>
+        <div class="flex flex-col items-center">
+          <span class="text-[14px] font-extrabold text-[#2a2a18]">{{ endDateStr() }}</span>
+          <span class="text-[12px] font-medium text-gray-500 mt-0.5">{{ appliedEndTime() }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4-Grid -->
+    <div class="grid grid-cols-2 gap-3.5 mb-8">
+      <div class="bg-white border border-gray-200 rounded-[20px] p-5 flex flex-col items-center text-center shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+        <mat-icon class="!text-[24px] text-[#f0c355] mb-2.5">receipt</mat-icon>
+        <span class="text-[22px] font-extrabold text-[#2a2a18] leading-none mb-1.5">0</span>
+        <span class="text-[12px] font-medium text-gray-500">Total Orders</span>
+      </div>
+      
+      <div class="bg-white border border-gray-200 rounded-[20px] p-5 flex flex-col items-center text-center shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+        <mat-icon class="!text-[24px] text-[#f0c355] mb-2.5">payments</mat-icon>
+        <span class="text-[22px] font-extrabold text-[#2a2a18] leading-none mb-1.5">₹0.00</span>
+        <span class="text-[12px] font-medium text-gray-500">Total Revenue</span>
+      </div>
+
+      <div class="bg-white border border-gray-200 rounded-[20px] p-5 flex flex-col items-center text-center shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+        <mat-icon class="!text-[24px] text-gray-600 mb-2.5">list</mat-icon>
+        <span class="text-[22px] font-extrabold text-[#2a2a18] leading-none mb-1.5">0</span>
+        <span class="text-[12px] font-medium text-gray-500">Order Types</span>
+      </div>
+
+      <div class="bg-white border border-gray-200 rounded-[20px] p-5 flex flex-col items-center text-center shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+        <mat-icon class="!text-[24px] text-gray-600 mb-2.5">trending_up</mat-icon>
+        <span class="text-[22px] font-extrabold text-[#2a2a18] leading-none mb-1.5">₹0.00</span>
+        <span class="text-[12px] font-medium text-gray-500">Avg Order Value</span>
+      </div>
+    </div>
+
+    <!-- Order Type Details Section -->
+    <div class="mb-5">
+      <h3 class="text-[17px] font-extrabold text-[#2a2a18]">Order Type Details</h3>
+      <p class="text-[13px] font-medium text-gray-500">Tap any type to view detailed breakdown</p>
+    </div>
+
+    <!-- Empty State -->
+    <div class="bg-white rounded-[28px] p-12 flex flex-col items-center text-center shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
+      <div class="w-[84px] h-[84px] bg-gray-50 rounded-full flex items-center justify-center mb-6 border border-gray-100">
+        <mat-icon class="!text-[46px] text-gray-300 w-[46px] h-[46px] leading-[46px]">receipt_long</mat-icon>
+      </div>
+      <h4 class="text-[16px] font-extrabold text-gray-400 mb-2">No order types available</h4>
+      <p class="text-[13px] font-semibold text-gray-300 leading-relaxed max-w-[200px]">Orders will appear here once you start taking them</p>
+    </div>
+
+  } @else if (activeReportView() === 'customer-data') {
+    <!-- Customers Header -->
+    <div class="flex items-center justify-between mt-2 mb-4">
+      <div class="flex items-center gap-3">
+        <button (click)="activeReportView.set('list')" class="w-10 h-10 flex items-center justify-center text-[#2a2a18] hover:bg-gray-100 rounded-full transition active:scale-95">
+          <mat-icon class="!text-[24px]">arrow_back</mat-icon>
+        </button>
+        <h2 class="text-[20px] font-extrabold text-[#2a2a18]">Customers</h2>
+      </div>
+      <div class="flex items-center gap-2">
+        <button (click)="isAddCustomerOpen.set(true)" class="w-10 h-10 rounded-full bg-[#f0c355] text-[#2a2a18] flex items-center justify-center shadow-sm hover:opacity-90 active:scale-95 transition">
+          <mat-icon class="!text-[20px]">person_add</mat-icon>
+        </button>
+        <button class="w-10 h-10 rounded-full bg-[#f0c355] text-[#2a2a18] flex items-center justify-center shadow-sm hover:opacity-90 active:scale-95 transition">
+          <mat-icon class="!text-[20px]">file_download</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Search Input -->
+    <div class="relative mb-4">
+      <mat-icon class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 !text-[20px] w-5 h-5 flex items-center justify-center">search</mat-icon>
+      <input type="text"
+             [value]="searchQuery()"
+             (input)="searchQuery.set($any($event.target).value)"
+             placeholder="Search customers..."
+             class="w-full bg-[#fafaf6] border border-gray-100 rounded-2xl pl-12 pr-4 py-3.5 text-sm font-semibold text-[#2a2a18] placeholder-gray-400 focus:outline-none focus:border-[#f0c355]/40 transition">
+    </div>
+
+    <!-- Filter & Sort Options Grid -->
+    <div class="grid grid-cols-2 gap-3 mb-4">
+      <!-- Sort Pill -->
+      <div (click)="isCustomerSortSheetOpen.set(true)"
+           class="flex items-center justify-between bg-white border border-gray-100 rounded-2xl px-4 py-3 cursor-pointer hover:bg-gray-50 active:scale-[0.98] transition shadow-sm">
+        <div class="flex items-center gap-2">
+          <mat-icon class="text-gray-400 !text-[18px] w-[18px] h-[18px] flex items-center justify-center">sort</mat-icon>
+          <span class="text-xs font-extrabold text-gray-500">Sort by: {{ customerSortOption() }}</span>
+        </div>
+        <mat-icon class="text-gray-400 !text-[16px] w-4 h-4 flex items-center justify-center">keyboard_arrow_down</mat-icon>
+      </div>
+
+      <!-- Date Filter Pill -->
+      <div class="flex items-center justify-between bg-white border border-gray-100 rounded-2xl px-4 py-3 shadow-sm">
+        <span class="text-xs font-extrabold text-gray-500">Date Filter</span>
+        <label class="relative inline-flex items-center cursor-pointer select-none">
+          <input type="checkbox"
+                 [checked]="dateFilterActive()"
+                 (change)="dateFilterActive.set($any($event.target).checked)"
+                 class="sr-only peer">
+          <div class="w-10 h-6 bg-gray-200 rounded-full peer peer-focus:ring-0 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#f0c355]"></div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Date Range Picker Pill (if active) -->
+    @if (dateFilterActive()) {
+      <div (click)="openDatePicker()" class="cursor-pointer flex items-center gap-3 bg-white rounded-2xl px-4 py-2.5 mb-4
+                  shadow-md shadow-[#727339]/[0.07] border border-[#727339]/10 transition hover:bg-gray-50 active:scale-[0.98] animate-fadeIn">
+        <button class="bg-[#f0c355] text-[#2a2a18] rounded-xl px-5 py-2.5
+                       text-sm font-extrabold whitespace-nowrap pointer-events-none">Today</button>
+        <div class="flex-1 flex justify-center items-center gap-3">
+          <div class="flex flex-col items-center">
+            <span class="text-sm font-bold text-[#2a2a18]">{{ startDateStr() }}</span>
+            <span class="text-[11px] font-medium text-[#727339]">{{ appliedStartTime() }}</span>
+          </div>
+          <span class="text-[#a09a6e]">—</span>
+          <div class="flex flex-col items-center">
+            <span class="text-sm font-bold text-[#2a2a18]">{{ endDateStr() }}</span>
+            <span class="text-[11px] font-medium text-[#727339]">{{ appliedEndTime() }}</span>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Clear Filters Link -->
+    <div class="mb-4">
+      <button (click)="clearCustomerFilters()"
+              class="flex items-center gap-1.5 text-xs font-extrabold text-[#f0c355] hover:opacity-80 transition active:scale-95">
+        <mat-icon class="!text-[16px] w-4 h-4 flex items-center justify-center">filter_list</mat-icon>
+        Clear Filters
+      </button>
+    </div>
+
+    <!-- Customer Cards List -->
+    <div class="flex flex-col gap-4">
+      @for (c of filteredCustomers(); track c.phone) {
+        <div class="bg-white border border-gray-100 rounded-3xl p-5 shadow-sm shadow-[#727339]/[0.03] flex flex-col gap-4">
+          <!-- Info -->
+          <div class="flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-full bg-[#f0c355]/15 text-[#f0c355] flex items-center justify-center font-extrabold text-base flex-shrink-0">
+              {{ c.name ? c.name.charAt(0).toUpperCase() : '?' }}
+            </div>
+            <div class="flex flex-col gap-0.5">
+              @if (c.name) {
+                <span class="text-[15px] font-extrabold text-[#2a2a18]">{{ c.name }}</span>
+              }
+              <div class="flex items-center gap-1.5 text-gray-500">
+                <mat-icon class="!text-[14px] w-3.5 h-3.5 flex items-center justify-center">phone</mat-icon>
+                <span class="text-[12.5px] font-semibold">{{ c.phone }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Summary stats box -->
+          <div class="bg-[#fafaf6] rounded-2xl p-3.5 grid grid-cols-2 gap-4 text-center">
+            <div class="flex items-center justify-center gap-2.5 border-r border-gray-100/80">
+              <mat-icon class="text-gray-400 !text-[18px] w-[18px] h-[18px] flex items-center justify-center">shopping_cart</mat-icon>
+              <span class="text-[14px] font-extrabold text-[#2a2a18]">{{ c.orders }}</span>
+            </div>
+            <div class="flex items-center justify-center gap-2.5">
+              <mat-icon class="text-green-600 !text-[18px] w-[18px] h-[18px] flex items-center justify-center">account_balance_wallet</mat-icon>
+              <span class="text-[14px] font-extrabold text-[#2a2a18]">₹{{ c.balance.toFixed(2) }}</span>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <div class="bg-white rounded-3xl p-12 flex flex-col items-center text-center shadow-sm border border-gray-100">
+          <div class="w-[90px] h-[90px] bg-gray-100 rounded-full flex items-center justify-center mb-6">
+            <mat-icon class="!text-[46px] text-gray-400">group_off</mat-icon>
+          </div>
+          <h4 class="text-[18px] font-extrabold text-[#2a2a18] mb-2">No Customers Found</h4>
+          <p class="text-[13px] font-medium text-gray-400 leading-relaxed max-w-[220px]">Try resetting search or filters to locate customers</p>
+        </div>
+      }
+    </div>
+
+  } @else if (activeReportView() === 'return-report') {
+    <!-- Return Report Header -->
+    <div class="flex items-center gap-3 mt-2 mb-1">
+      <button (click)="activeReportView.set('list')" class="w-10 h-10 flex items-center justify-center text-[#2a2a18] hover:bg-gray-100 rounded-full transition active:scale-95">
+        <mat-icon class="!text-[24px]">arrow_back</mat-icon>
+      </button>
+      <div>
+        <h2 class="text-[20px] font-extrabold text-[#2a2a18] leading-tight">Return Report</h2>
+        <p class="text-[12px] font-semibold text-gray-400">0 returns</p>
+      </div>
+    </div>
+
+    <!-- Date Range Bar -->
+    <div (click)="openDatePicker()" class="cursor-pointer flex items-center gap-3 bg-white rounded-2xl px-4 py-2.5
+                shadow-md shadow-[#727339]/[0.07] border border-[#727339]/10 transition hover:bg-gray-50 active:scale-[0.98]">
+      <button class="bg-[#f0c355] text-[#2a2a18] rounded-xl px-5 py-2.5
+                     text-sm font-extrabold whitespace-nowrap pointer-events-none">Today</button>
+      <div class="flex-1 flex justify-center items-center gap-3">
+        <div class="flex flex-col items-center">
+          <span class="text-sm font-bold text-[#2a2a18]">{{ startDateStr() }}</span>
+          <span class="text-[11px] font-medium text-[#727339]">{{ appliedStartTime() }}</span>
+        </div>
+        <span class="text-[#a09a6e]">—</span>
+        <div class="flex flex-col items-center">
+          <span class="text-sm font-bold text-[#2a2a18]">{{ endDateStr() }}</span>
+          <span class="text-[11px] font-medium text-[#727339]">{{ appliedEndTime() }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Returns Card -->
+    <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 border-l-4 border-l-red-400 relative overflow-hidden">
+      <div class="flex items-center justify-between mb-3">
+        <span class="text-[14px] font-bold text-gray-600">Total Returns</span>
+        <span class="bg-red-500 text-white text-[11px] font-extrabold px-3 py-1 rounded-full">0 Bills</span>
+      </div>
+      <div class="text-[32px] font-extrabold text-red-500 mb-3">₹0.00</div>
+      <div class="w-full h-px bg-gray-100 mb-3"></div>
+      <div class="flex items-center gap-2 text-[12px] text-gray-400 font-medium">
+        <mat-icon class="!text-[16px] text-gray-400">info</mat-icon>
+        <span>Total amount of returned products in the selected period</span>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="bg-white rounded-3xl p-12 flex flex-col items-center text-center shadow-sm border border-gray-100">
+      <div class="w-[90px] h-[90px] bg-gray-100 rounded-full flex items-center justify-center mb-6">
+        <mat-icon class="!text-[46px] text-gray-400">assignment_return</mat-icon>
+      </div>
+      <h4 class="text-[18px] font-extrabold text-[#2a2a18] mb-2">No Returns Found</h4>
+      <p class="text-[13px] font-medium text-gray-400 leading-relaxed max-w-[220px]">There are no product returns in the selected date range.</p>
+    </div>
+
+  } @else if (activeReportView() === 'credit-report') {
+    <!-- Credit Report Header -->
+    <div class="flex items-center gap-3 mt-2 mb-4">
+      <button (click)="activeReportView.set('list')" class="w-10 h-10 flex items-center justify-center text-[#2a2a18] hover:bg-gray-100 rounded-full transition active:scale-95">
+        <mat-icon class="!text-[24px]">arrow_back</mat-icon>
+      </button>
+      <div class="flex-1 relative">
+        <mat-icon class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 !text-[20px] w-5 h-5 flex items-center justify-center">search</mat-icon>
+        <input type="text"
+               [value]="creditSearchQuery()"
+               (input)="creditSearchQuery.set($any($event.target).value)"
+               placeholder="Search"
+               class="w-full bg-[#fafaf6] border border-gray-100 rounded-2xl pl-12 pr-4 py-3 text-sm font-semibold text-[#2a2a18] placeholder-gray-400 focus:outline-none focus:border-[#f0c355]/40 transition">
+      </div>
+      <!-- Sort Dropdown Pill -->
+      <div class="relative">
+        <button (click)="isCreditSortOpen.update(v => !v)"
+                class="bg-[#f0c355] text-[#2a2a18] font-extrabold px-4 py-3 rounded-2xl text-xs hover:opacity-90 active:scale-95 transition flex items-center gap-1.5 shadow-sm">
+          <span class="max-w-[80px] truncate">{{ creditSortOption() }}</span>
+          <mat-icon class="!text-[16px] w-4 h-4 flex items-center justify-center">keyboard_arrow_down</mat-icon>
+        </button>
+        @if (isCreditSortOpen()) {
+          <div class="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-2xl shadow-xl z-50 py-1.5 animate-fadeIn">
+            @for (opt of ['Amount High to Low', 'Amount Low to High', 'Name A-Z', 'Name Z-A']; track opt) {
+              <div (click)="creditSortOption.set(opt); isCreditSortOpen.set(false)"
+                   class="px-4 py-3 text-xs font-bold text-[#2a2a18] hover:bg-[#fffdf5] hover:text-[#f0c355] cursor-pointer transition">
+                {{ opt }}
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Total amount to be received -->
+    <div class="bg-[#f0c355] rounded-3xl p-6 text-center text-[#2a2a18] shadow-sm mb-6 flex flex-col gap-1">
+      <span class="text-sm font-bold opacity-80">Total Amount to be Received</span>
+      <span class="text-[32px] font-extrabold">₹0.00</span>
+    </div>
+
+    <!-- Empty State -->
+    <div class="flex flex-col items-center justify-center py-20 text-center">
+      <span class="text-sm font-bold text-gray-400">No customers to display.</span>
+    </div>
+
+  } @else if (activeReportView() === 'expenses') {
+    <!-- Expenses Header -->
+    <div class="flex items-center justify-between mt-2 mb-1">
+      <div class="flex items-center gap-3">
+        <button (click)="activeReportView.set('list')" class="w-10 h-10 flex items-center justify-center text-[#2a2a18] hover:bg-gray-100 rounded-full transition active:scale-95">
+          <mat-icon class="!text-[24px]">arrow_back</mat-icon>
+        </button>
+        <div>
+          <h2 class="text-[20px] font-extrabold text-[#2a2a18] leading-tight">Expenses</h2>
+          <p class="text-[12px] font-semibold text-gray-400">{{ startDateStr() }} - {{ endDateStr() }}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center hover:bg-gray-100 transition">
+          <mat-icon class="!text-[20px]">search</mat-icon>
+        </button>
+        <button class="w-10 h-10 rounded-full bg-[#f0c355] text-[#2a2a18] flex items-center justify-center shadow-sm hover:opacity-90 active:scale-95 transition">
+          <mat-icon class="!text-[20px]">file_download</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Date Range Bar -->
+    <div (click)="openDatePicker()" class="cursor-pointer flex items-center gap-3 bg-white rounded-2xl px-4 py-2.5 mb-4
+                shadow-md shadow-[#727339]/[0.07] border border-[#727339]/10 transition hover:bg-gray-50 active:scale-[0.98]">
+      <button class="bg-[#f0c355] text-[#2a2a18] rounded-xl px-5 py-2.5
+                     text-sm font-extrabold whitespace-nowrap pointer-events-none">Today</button>
+      <div class="flex-1 flex justify-center items-center gap-3">
+        <div class="flex flex-col items-center">
+          <span class="text-sm font-bold text-[#2a2a18]">{{ startDateStr() }}</span>
+          <span class="text-[11px] font-medium text-[#727339]">{{ appliedStartTime() }}</span>
+        </div>
+        <span class="text-[#a09a6e]">—</span>
+        <div class="flex flex-col items-center">
+          <span class="text-sm font-bold text-[#2a2a18]">{{ endDateStr() }}</span>
+          <span class="text-[11px] font-medium text-[#727339]">{{ appliedEndTime() }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- No data to display -->
+    <div class="bg-white border border-gray-100 rounded-3xl p-5 text-center text-sm font-bold text-gray-400 mb-6 shadow-sm">
+      No data to display
+    </div>
+
+    <!-- Filter Tab Bar -->
+    <div class="w-full grid grid-cols-3 gap-1 p-1 bg-gray-100 rounded-full max-w-[240px] mx-auto mb-20">
+      @for (tab of ['All', 'Paid', 'Due']; track tab) {
+        <button (click)="expenseTab.set($any(tab.toLowerCase()))"
+                class="py-2 rounded-full text-xs font-bold transition-all duration-200
+                       {{ expenseTab() === tab.toLowerCase() ? 'bg-[#f0c355] text-[#2a2a18] shadow-sm font-extrabold' : 'text-gray-500 hover:bg-gray-50/50' }}">
+          {{ tab }}
+        </button>
+      }
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="fixed bottom-24 left-0 right-0 flex justify-center z-40 pointer-events-none">
+      <button (click)="isAddExpenseOpen.set(true)"
+              class="pointer-events-auto bg-[#f0c355] text-[#2a2a18] font-extrabold px-8 py-4 rounded-full shadow-lg shadow-[#f0c355]/30 hover:-translate-y-0.5 active:scale-[0.98] transition-all flex items-center gap-2">
+        <mat-icon class="!text-[20px]">add</mat-icon>
+        Add Expense
+      </button>
+    </div>
+
+  } @else if (activeReportView() === 'purchase-expense') {
+    <!-- Purchase Report Header -->
+    <div class="flex items-center justify-between mt-2 mb-1">
+      <div class="flex items-center gap-3">
+        <button (click)="activeReportView.set('list')" class="w-10 h-10 flex items-center justify-center text-[#2a2a18] hover:bg-gray-100 rounded-full transition active:scale-95">
+          <mat-icon class="!text-[24px]">arrow_back</mat-icon>
+        </button>
+        <div>
+          <h2 class="text-[20px] font-extrabold text-[#2a2a18] leading-tight">Purchase Report</h2>
+          <p class="text-[12px] font-semibold text-gray-400">{{ startDateStr() }} - {{ endDateStr() }}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center hover:bg-gray-100 transition">
+          <mat-icon class="!text-[20px]">description</mat-icon>
+        </button>
+        <button class="w-10 h-10 rounded-full bg-[#f0c355] text-[#2a2a18] flex items-center justify-center shadow-sm hover:opacity-90 active:scale-95 transition">
+          <mat-icon class="!text-[20px]">file_download</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Date Range Bar -->
+    <div (click)="openDatePicker()" class="cursor-pointer flex items-center gap-3 bg-white rounded-2xl px-4 py-2.5 mb-6
+                shadow-md shadow-[#727339]/[0.07] border border-[#727339]/10 transition hover:bg-gray-50 active:scale-[0.98]">
+      <button class="bg-[#f0c355] text-[#2a2a18] rounded-xl px-5 py-2.5
+                     text-sm font-extrabold whitespace-nowrap pointer-events-none">Today</button>
+      <div class="flex-1 flex justify-center items-center gap-3">
+        <div class="flex flex-col items-center">
+          <span class="text-sm font-bold text-[#2a2a18]">{{ startDateStr() }}</span>
+          <span class="text-[11px] font-medium text-[#727339]">{{ appliedStartTime() }}</span>
+        </div>
+        <span class="text-[#a09a6e]">—</span>
+        <div class="flex flex-col items-center">
+          <span class="text-sm font-bold text-[#2a2a18]">{{ endDateStr() }}</span>
+          <span class="text-[11px] font-medium text-[#727339]">{{ appliedEndTime() }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subheader Vendor count -->
+    <div class="flex justify-between items-center mb-6">
+      <span class="text-sm font-extrabold text-[#2a2a18]">Vendor Details</span>
+      <span class="text-xs font-bold text-gray-400">0 Vendors</span>
+    </div>
+
+    <!-- Empty State -->
+    <div class="flex flex-col items-center text-center py-16">
+      <mat-icon class="!text-[64px] text-gray-300 w-16 h-16 flex items-center justify-center mb-4">receipt_long</mat-icon>
+      <h4 class="text-[16px] font-extrabold text-[#2a2a18] mb-1">No purchases found</h4>
+      <p class="text-xs font-semibold text-gray-400">No purchase records for the selected period.</p>
+    </div>
+
+  } @else if (activeReportView() === 'product-sales') {
+    <!-- Product Sales Report Header (Yellow header style wrapper) -->
+    <div class="-mx-6 -mt-6 bg-[#f0c355] px-6 py-5 mb-6 flex justify-between items-center rounded-b-[32px] shadow-sm">
+      <div class="flex items-center gap-3">
+        <button (click)="activeReportView.set('list')" class="w-10 h-10 flex items-center justify-center text-[#2a2a18] hover:bg-[#2a2a18]/5 rounded-full transition active:scale-95">
+          <mat-icon class="!text-[24px]">arrow_back</mat-icon>
+        </button>
+        <h2 class="text-[20px] font-extrabold text-[#2a2a18] leading-tight">Product Sales Report</h2>
+      </div>
+      <div class="flex gap-2">
+        <button class="bg-white text-[#2a2a18] font-extrabold text-xs px-4 py-2.5 rounded-xl shadow-sm flex items-center gap-1.5 hover:bg-gray-50 active:scale-95 transition">
+          <mat-icon class="!text-sm">description</mat-icon>
+          PDF
+        </button>
+        <button class="bg-white text-[#2a2a18] font-extrabold text-xs px-4 py-2.5 rounded-xl shadow-sm flex items-center gap-1.5 hover:bg-gray-50 active:scale-95 transition">
+          <mat-icon class="!text-sm">grid_on</mat-icon>
+          CSV
+        </button>
+      </div>
+    </div>
+
+    <!-- Date Range Bar -->
+    <div (click)="openDatePicker()" class="cursor-pointer flex items-center gap-3 bg-white rounded-2xl px-4 py-2.5 mb-6
+                shadow-md shadow-[#727339]/[0.07] border border-[#727339]/10 transition hover:bg-gray-50 active:scale-[0.98]">
+      <button class="bg-[#f0c355] text-[#2a2a18] rounded-xl px-5 py-2.5
+                     text-sm font-extrabold whitespace-nowrap pointer-events-none">Today</button>
+      <div class="flex-1 flex justify-center items-center gap-3">
+        <div class="flex flex-col items-center">
+          <span class="text-sm font-bold text-[#2a2a18]">{{ startDateStr() }}</span>
+          <span class="text-[11px] font-medium text-[#727339]">{{ appliedStartTime() }}</span>
+        </div>
+        <span class="text-[#a09a6e]">—</span>
+        <div class="flex flex-col items-center">
+          <span class="text-sm font-bold text-[#2a2a18]">{{ endDateStr() }}</span>
+          <span class="text-[11px] font-medium text-[#727339]">{{ appliedEndTime() }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- White Card Container for Empty state -->
+    <div class="bg-white rounded-3xl p-16 flex flex-col items-center text-center shadow-sm border border-gray-100">
+      <div class="w-[90px] h-[90px] bg-gray-100 rounded-full flex items-center justify-center mb-6">
+        <mat-icon class="!text-[46px] text-gray-400">pie_chart</mat-icon>
+      </div>
+      <h4 class="text-[18px] font-extrabold text-[#2a2a18] mb-2">No sales data available</h4>
+      <p class="text-[13px] font-medium text-gray-400 leading-relaxed max-w-[220px]">Try selecting a different date range</p>
+    </div>
+
+  } @else if (activeReportView() === 'balance-sheet') {
+    <!-- Balance Sheet Header -->
+    <div class="flex items-center justify-between mt-2 mb-4">
+      <div class="flex items-center gap-3">
+        <button (click)="activeReportView.set('list')" class="w-10 h-10 flex items-center justify-center text-[#2a2a18] hover:bg-gray-100 rounded-full transition active:scale-95">
+          <mat-icon class="!text-[24px]">arrow_back</mat-icon>
+        </button>
+        <h2 class="text-[22px] font-extrabold text-[#2a2a18]">Balance Sheet</h2>
+      </div>
+      
+      <!-- Year Selector Pill -->
+      <button (click)="isYearPickerOpen.set(true)"
+              class="flex items-center gap-1.5 px-4 py-2 bg-white border border-[#f0c355] rounded-full text-sm font-bold text-[#2a2a18] active:scale-95 transition shadow-sm">
+        <span>{{ selectedBalanceYear() }}</span>
+        <mat-icon class="!text-base text-gray-500">expand_more</mat-icon>
+      </button>
+    </div>
+
+    <!-- Tabs: Daily / Monthly -->
+    <div class="bg-gray-100/70 p-1.5 rounded-2xl flex gap-1 mb-5">
+      <button (click)="balanceSheetTab.set('daily')"
+              [class]="balanceSheetTab() === 'daily' ? 'bg-[#f0c355] text-[#2a2a18] shadow-sm' : 'text-gray-500 hover:text-gray-700'"
+              class="flex-1 py-3 text-center text-sm font-extrabold rounded-xl transition duration-150 active:scale-[0.98]">
+        Daily
+      </button>
+      <button (click)="balanceSheetTab.set('monthly')"
+              [class]="balanceSheetTab() === 'monthly' ? 'bg-[#f0c355] text-[#2a2a18] shadow-sm' : 'text-gray-500 hover:text-gray-700'"
+              class="flex-1 py-3 text-center text-sm font-extrabold rounded-xl transition duration-150 active:scale-[0.98]">
+        Monthly
+      </button>
+    </div>
+
+    @if (balanceSheetTab() === 'daily') {
+      <!-- Daily Summary Card -->
+      <div class="bg-white border border-gray-100 rounded-3xl p-6 mb-6 shadow-sm shadow-[#727339]/[0.03]">
+        <h3 class="text-[16px] font-extrabold text-[#2a2a18] text-center mb-5">Daily Summary</h3>
+        <div class="grid grid-cols-3 gap-2 text-center">
+          <div class="flex flex-col">
+            <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Total Sales</span>
+            <span class="text-[16px] font-extrabold text-green-600">₹{{ dailySummary().sales.toFixed(2) }}</span>
+          </div>
+          <div class="flex flex-col border-x border-gray-100">
+            <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Total Expense</span>
+            <span class="text-[16px] font-extrabold text-red-500">₹{{ dailySummary().expense.toFixed(2) }}</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Net Balance</span>
+            <span class="text-[16px] font-extrabold text-green-600">₹{{ dailySummary().balance.toFixed(2) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collapsible Day Cards -->
+      <div class="flex flex-col gap-4">
+        @for (item of dailyItems(); track item.date) {
+          <div class="bg-white border border-gray-100 rounded-3xl shadow-sm transition-all duration-200">
+            <!-- Summary Header (clickable to toggle) -->
+            <div (click)="toggleDailyExpand(item.date)"
+                 class="flex justify-between items-center px-6 py-4 cursor-pointer hover:bg-gray-50/50 rounded-t-3xl rounded-b-3xl transition">
+              <span class="text-[15px] font-extrabold text-[#2a2a18]">{{ item.date }}</span>
+              <mat-icon [class.rotate-180]="expandedDaily()[item.date]"
+                        class="!text-xl text-gray-500 transition-transform duration-200">expand_more</mat-icon>
+            </div>
+            
+            <!-- Expanded Details -->
+            @if (expandedDaily()[item.date]) {
+              <div class="px-6 pb-5 pt-1 border-t border-gray-50 animate-[slideDown_0.2s_ease-out]">
+                <div class="grid grid-cols-3 gap-2 text-center">
+                  <div class="flex flex-col">
+                    <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Sales</span>
+                    <span class="text-[14px] font-extrabold text-green-600">₹{{ item.sales.toFixed(2) }}</span>
+                  </div>
+                  <div class="flex flex-col border-x border-gray-50">
+                    <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Expense</span>
+                    <span class="text-[14px] font-extrabold text-red-500">₹{{ item.expense.toFixed(2) }}</span>
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Balance</span>
+                    <span class="text-[14px] font-extrabold text-green-600">₹{{ item.balance.toFixed(2) }}</span>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    } @else {
+      <!-- Monthly Summary Card -->
+      <div class="bg-white border border-gray-100 rounded-3xl p-6 mb-6 shadow-sm shadow-[#727339]/[0.03]">
+        <h3 class="text-[16px] font-extrabold text-[#2a2a18] text-center mb-5">Monthly Summary</h3>
+        <div class="grid grid-cols-3 gap-2 text-center">
+          <div class="flex flex-col">
+            <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Total Sales</span>
+            <span class="text-[16px] font-extrabold text-green-600">₹{{ dailySummary().sales.toFixed(2) }}</span>
+          </div>
+          <div class="flex flex-col border-x border-gray-100">
+            <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Total Expense</span>
+            <span class="text-[16px] font-extrabold text-red-500">₹{{ dailySummary().expense.toFixed(2) }}</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Net Balance</span>
+            <span class="text-[16px] font-extrabold text-green-600">₹{{ dailySummary().balance.toFixed(2) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collapsible Month Cards -->
+      <div class="flex flex-col gap-4">
+        @for (item of monthlyItems(); track item.month) {
+          <div class="bg-white border border-gray-100 rounded-3xl shadow-sm transition-all duration-200">
+            <div (click)="toggleMonthlyExpand(item.month)"
+                 class="flex justify-between items-center px-6 py-4 cursor-pointer hover:bg-gray-50/50 rounded-t-3xl rounded-b-3xl transition">
+              <span class="text-[15px] font-extrabold text-[#2a2a18]">{{ item.month }}</span>
+              <mat-icon [class.rotate-180]="expandedMonthly()[item.month]"
+                        class="!text-xl text-gray-500 transition-transform duration-200">expand_more</mat-icon>
+            </div>
+            
+            @if (expandedMonthly()[item.month]) {
+              <div class="px-6 pb-5 pt-1 border-t border-gray-50 animate-[slideDown_0.2s_ease-out]">
+                <div class="grid grid-cols-3 gap-2 text-center">
+                  <div class="flex flex-col">
+                    <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Sales</span>
+                    <span class="text-[14px] font-extrabold text-green-600">₹{{ item.sales.toFixed(2) }}</span>
+                  </div>
+                  <div class="flex flex-col border-x border-gray-50">
+                    <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Expense</span>
+                    <span class="text-[14px] font-extrabold text-red-500">₹{{ item.expense.toFixed(2) }}</span>
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Balance</span>
+                    <span class="text-[14px] font-extrabold text-green-600">₹{{ item.balance.toFixed(2) }}</span>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  }
+
+</main>
+
+<!-- Sort Bills Overlay -->
+@if (isSortSheetOpen()) {
+  <div class="fixed inset-0 z-[100] flex flex-col justify-end">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fadeIn"
+         (click)="isSortSheetOpen.set(false)"></div>
+
+    <!-- Bottom Sheet -->
+    <div class="relative bg-white w-full max-w-3xl mx-auto rounded-t-[32px] pt-7 pb-8 shadow-2xl animate-slideUp">
+      
+      <!-- Header -->
+      <div class="flex justify-between items-center mb-5 px-6">
+        <h2 class="text-[18px] font-extrabold text-[#2a2a18]">Sort Bills</h2>
+        <button (click)="isSortSheetOpen.set(false)" class="w-8 h-8 flex items-center justify-center bg-gray-50 text-[#2a2a18] hover:bg-gray-100 rounded-full transition">
+          <mat-icon class="!text-[20px]">close</mat-icon>
+        </button>
+      </div>
+
+      <!-- List -->
+      <div class="flex flex-col">
+        @for (opt of sortOptions; track opt.label) {
+          <button (click)="sortOption.set(opt.label); isSortSheetOpen.set(false)"
+                  class="flex items-center justify-between px-6 py-4 transition-colors
+                         {{ sortOption() === opt.label ? 'bg-[#fffdf5] border-t border-b border-[#f0c355]/30' : 'hover:bg-gray-50 border-t border-b border-transparent' }}">
+            <div class="flex items-center gap-3.5">
+              <mat-icon class="!text-[22px] {{ sortOption() === opt.label ? 'text-[#f0c355]' : 'text-gray-500' }}">{{ opt.icon }}</mat-icon>
+              <span class="text-[15px] {{ sortOption() === opt.label ? 'font-bold text-[#f0c355]' : 'font-medium text-[#2a2a18]' }}">
+                {{ opt.label }}
+              </span>
+            </div>
+            @if (sortOption() === opt.label) {
+              <mat-icon class="!text-[22px] text-[#f0c355]">check</mat-icon>
+            }
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Date Range Picker Overlay -->
+@if (isDatePickerOpen()) {
+  <div class="fixed inset-0 z-[100] flex flex-col justify-end">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fadeIn"
+         (click)="closeDatePicker()"></div>
+
+    <!-- Bottom Sheet -->
+    <div class="relative bg-white w-full max-w-3xl mx-auto rounded-t-[32px] pt-8 pb-8 px-6 shadow-2xl animate-slideUp">
+      
+      <!-- Calendar Header -->
+      <div class="flex justify-between items-center mb-6 px-2">
+        <button (click)="prevMonth()" class="w-8 h-8 flex items-center justify-center text-[#2a2a18] hover:bg-gray-100 rounded-full transition active:scale-90">
+          <mat-icon class="!text-[22px]">arrow_left</mat-icon>
+        </button>
+        <h2 class="text-[17px] font-extrabold text-[#2a2a18]">{{ monthName() }} {{ currentYear() }}</h2>
+        <button (click)="nextMonth()" class="w-8 h-8 flex items-center justify-center text-[#2a2a18] hover:bg-gray-100 rounded-full transition active:scale-90">
+          <mat-icon class="!text-[22px]">arrow_right</mat-icon>
+        </button>
+      </div>
+
+      <!-- Weekdays -->
+      <div class="grid grid-cols-7 text-center mb-4">
+        @for (day of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; track day) {
+          <div class="text-[13px] font-bold text-[#a09a6e]/70">{{ day }}</div>
+        }
+      </div>
+
+      <!-- Days Grid -->
+      <div class="grid grid-cols-7 gap-y-2 mb-8">
+        <!-- Blank days -->
+        @for (blank of blankDays(); track blank) {
+          <div></div>
+        }
+        
+        <!-- Actual days -->
+        @for (day of daysInMonth(); track day) {
+          <div class="flex justify-center relative h-10 items-center">
+            <!-- Background highlight for selected range -->
+            @if (isBetween(day)) {
+              <div class="absolute inset-0 bg-[#f9e5a7]"></div>
+            }
+            @if ((isStart(day) || isEnd(day)) && selectedStart() && selectedEnd() && selectedStart()!.getTime() !== selectedEnd()!.getTime()) {
+              <!-- If it's the start edge, highlight the right half -->
+              @if (isStart(day)) {
+                <div class="absolute right-0 w-1/2 h-full bg-[#f9e5a7]"></div>
+              }
+              <!-- If it's the end edge, highlight the left half -->
+              @if (isEnd(day)) {
+                <div class="absolute left-0 w-1/2 h-full bg-[#f9e5a7]"></div>
+              }
+            }
+
+            <button (click)="selectDate(day)"
+                    class="relative w-10 h-10 flex items-center justify-center text-[15px] z-10 transition-all
+                           {{ isStart(day) || isEnd(day) ? 'bg-[#f0c355] text-[#2a2a18] font-extrabold rounded-full shadow-md' : 
+                              isBetween(day) ? 'text-[#2a2a18] font-bold' : 
+                              'text-[#2a2a18] font-medium hover:bg-gray-100 rounded-full' }}">
+              {{ day }}
+            </button>
+          </div>
+        }
+      </div>
+
+      <!-- Time Range Selection -->
+      <div class="mb-8">
+        <h3 class="text-[15px] font-extrabold text-[#2a2a18] mb-3 px-1">Time Range</h3>
+        <div class="flex gap-4">
+          
+          <div class="flex-1 relative bg-[#f7f7f7] border border-gray-200 rounded-xl px-4 py-2.5 flex flex-col justify-center">
+            <span class="text-[11px] font-extrabold text-[#727339] mb-0.5">From</span>
+            <div class="flex justify-between items-center text-[#2a2a18] font-bold text-sm">
+              <span>{{ startTime() }}</span>
+              <mat-icon class="!text-[18px] text-gray-500 pointer-events-none">expand_more</mat-icon>
+            </div>
+            <input [ngxTimepicker]="pickerStart" [format]="24" readonly [value]="startTime()"
+                   class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+            <ngx-material-timepicker #pickerStart [format]="24" (timeSet)="startTime.set($event)"></ngx-material-timepicker>
+          </div>
+
+          <div class="flex-1 relative bg-[#f7f7f7] border border-gray-200 rounded-xl px-4 py-2.5 flex flex-col justify-center">
+            <span class="text-[11px] font-extrabold text-[#727339] mb-0.5">To</span>
+            <div class="flex justify-between items-center text-[#2a2a18] font-bold text-sm">
+              <span>{{ endTime() }}</span>
+              <mat-icon class="!text-[18px] text-gray-500 pointer-events-none">expand_more</mat-icon>
+            </div>
+            <input [ngxTimepicker]="pickerEnd" [format]="24" readonly [value]="endTime()"
+                   class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+            <ngx-material-timepicker #pickerEnd [format]="24" (timeSet)="endTime.set($event)"></ngx-material-timepicker>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Apply Button -->
+      <button (click)="applyDateRange()"
+              class="w-full bg-[#f0c355] text-[#2a2a18] rounded-xl py-3.5 text-[15px] font-extrabold
+                     shadow-lg shadow-[#f0c355]/30 hover:-translate-y-0.5 active:scale-[0.98] transition-all">
+        Apply
+      </button>
+
+    </div>
+  </div>
+}
+
+<!-- Year Picker Overlay -->
+@if (isYearPickerOpen()) {
+  <div class="fixed inset-0 z-[110] flex flex-col justify-end">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fadeIn"
+         (click)="isYearPickerOpen.set(false)"></div>
+
+    <!-- Bottom Sheet -->
+    <div class="relative bg-white w-full max-w-3xl mx-auto rounded-t-[32px] pt-4 pb-8 px-6 shadow-2xl animate-slideUp">
+      <!-- Bar Handler -->
+      <div class="w-12 h-1 bg-gray-200 rounded-full mx-auto mb-5"></div>
+      
+      <h3 class="text-[18px] font-extrabold text-[#2a2a18] text-center mb-5">Select Year</h3>
+      
+      <div class="flex flex-col gap-1.5 max-h-[300px] overflow-y-auto">
+        @for (year of balanceYears; track year) {
+          <div (click)="selectedBalanceYear.set(year); isYearPickerOpen.set(false)"
+               class="flex justify-between items-center py-4 px-5 rounded-2xl cursor-pointer transition
+                      {{ selectedBalanceYear() === year ? 'bg-[#fffdf5] font-extrabold text-[#f0c355] border-t border-b border-[#f0c355]/30' : 'hover:bg-gray-50 border-t border-b border-transparent text-[#2a2a18]' }}">
+            <span class="text-[15px] font-bold">{{ year }}</span>
+            @if (selectedBalanceYear() === year) {
+              <mat-icon class="!text-[22px] text-[#f0c355]">check</mat-icon>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Add Customers Bottom Sheet Modal -->
+@if (isAddCustomerOpen()) {
+  <div class="fixed inset-0 z-[120] flex flex-col justify-end">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fadeIn"
+         (click)="isAddCustomerOpen.set(false)"></div>
+
+    <!-- Bottom Sheet Content -->
+    <div class="relative bg-white w-full max-w-3xl mx-auto rounded-t-[32px] pt-4 pb-8 px-6 shadow-2xl animate-slideUp max-h-[85vh] overflow-y-auto">
+      <!-- Close & Header -->
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-[18px] font-extrabold text-[#2a2a18]">Add Customers</h3>
+        <button (click)="isAddCustomerOpen.set(false)" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
+          <mat-icon class="!text-[18px] text-gray-500">close</mat-icon>
+        </button>
+      </div>
+
+      <!-- Tab Selector -->
+      <div class="grid grid-cols-2 gap-2 p-1 bg-gray-100 rounded-2xl mb-6">
+        <button (click)="addCustomerTab.set('manual')"
+                class="flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm transition
+                       {{ addCustomerTab() === 'manual' ? 'bg-white shadow-sm text-[#2a2a18]' : 'text-gray-500 hover:bg-gray-50/50' }}">
+          <mat-icon class="!text-[18px]">edit</mat-icon>
+          Manual Entry
+        </button>
+        <button (click)="addCustomerTab.set('bulk')"
+                class="flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm transition
+                       {{ addCustomerTab() === 'bulk' ? 'bg-[#f0c355] text-[#2a2a18] shadow-sm' : 'text-gray-500 hover:bg-gray-50/50' }}">
+          <mat-icon class="!text-[18px]">cloud_upload</mat-icon>
+          Bulk Upload
+        </button>
+      </div>
+
+      <!-- Tab Content: Manual Entry -->
+      @if (addCustomerTab() === 'manual') {
+        <div class="flex flex-col gap-5">
+          <div class="flex items-center gap-1.5 text-sm font-bold text-[#2a2a18]">
+            <mat-icon class="text-gray-400 !text-[18px] w-[18px] h-[18px] flex items-center justify-center">edit</mat-icon>
+            Manual Entry (0)
+          </div>
+
+          <!-- Customer Form Card -->
+          <div class="border border-gray-100 rounded-3xl p-5 flex flex-col gap-4 bg-[#fafaf6]/30">
+            <span class="text-xs font-bold text-[#f0c355]">Customer 1</span>
+
+            <!-- Name Field -->
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-bold text-[#2a2a18]">Name *</label>
+              <input type="text"
+                     [value]="newCustomerName()"
+                     (input)="newCustomerName.set($any($event.target).value)"
+                     placeholder="Enter customer name"
+                     class="w-full bg-white border border-gray-100 rounded-2xl px-4 py-3.5 text-sm font-semibold text-[#2a2a18] placeholder-gray-400 focus:outline-none focus:border-[#f0c355]/40 transition">
+            </div>
+
+            <!-- Phone Field -->
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-bold text-[#2a2a18]">Phone Number *</label>
+              <input type="text"
+                     [value]="newCustomerPhone()"
+                     (input)="newCustomerPhone.set($any($event.target).value)"
+                     placeholder="Enter 10-digit phone number"
+                     class="w-full bg-white border border-gray-100 rounded-2xl px-4 py-3.5 text-sm font-semibold text-[#2a2a18] placeholder-gray-400 focus:outline-none focus:border-[#f0c355]/40 transition">
+            </div>
+
+            <!-- Credit Field -->
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-bold text-[#2a2a18]">Initial Credit (Optional)</label>
+              <input type="text"
+                     [value]="newCustomerCredit()"
+                     (input)="newCustomerCredit.set($any($event.target).value)"
+                     placeholder="0"
+                     class="w-full bg-white border border-gray-100 rounded-2xl px-4 py-3.5 text-sm font-semibold text-[#2a2a18] placeholder-gray-400 focus:outline-none focus:border-[#f0c355]/40 transition">
+            </div>
+          </div>
+
+          <!-- Submit Buttons -->
+          <div class="flex flex-col gap-3 mt-2">
+            <button (click)="addCustomer()"
+                    class="w-full bg-[#f0c355] text-[#2a2a18] font-extrabold py-4 rounded-2xl shadow-sm hover:opacity-90 active:scale-[0.98] transition text-sm flex items-center justify-center gap-2">
+              <mat-icon class="!text-[18px]">add</mat-icon>
+              Add Another Customer
+            </button>
+          </div>
+        </div>
+      } @else {
+        <!-- Tab Content: Bulk Upload -->
+        <div class="flex flex-col items-center text-center py-4">
+          <div class="w-16 h-16 rounded-full bg-[#f0c355]/10 flex items-center justify-center text-[#f0c355] mb-4">
+            <mat-icon class="!text-[32px]">cloud_upload</mat-icon>
+          </div>
+          <h4 class="text-[16px] font-extrabold text-[#2a2a18] mb-2">Bulk Upload</h4>
+          <p class="text-[13px] font-medium text-gray-400 leading-relaxed max-w-[280px] mb-8">
+            Upload customers from Excel or CSV files. Download our template for the correct format.
+          </p>
+
+          <div class="grid grid-cols-2 gap-4 w-full">
+            <button class="bg-[#f0c355]/10 text-[#f0c355] font-extrabold py-4 px-3 rounded-2xl text-xs hover:opacity-90 active:scale-95 transition flex items-center justify-center gap-2">
+              <mat-icon class="!text-[18px]">file_download</mat-icon>
+              Download Template
+            </button>
+            <button (click)="isAddCustomerOpen.set(false)" class="bg-[#f0c355] text-[#2a2a18] font-extrabold py-4 px-3 rounded-2xl text-xs hover:opacity-90 active:scale-95 transition flex items-center justify-center gap-2 shadow-sm">
+              <mat-icon class="!text-[18px]">description</mat-icon>
+              Upload File
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}
+
+<!-- Customer Sort Sheet Overlay -->
+@if (isCustomerSortSheetOpen()) {
+  <div class="fixed inset-0 z-[120] flex flex-col justify-end">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fadeIn"
+         (click)="isCustomerSortSheetOpen.set(false)"></div>
+
+    <!-- Bottom Sheet -->
+    <div class="relative bg-white w-full max-w-3xl mx-auto rounded-t-[32px] pt-4 pb-8 px-6 shadow-2xl animate-slideUp">
+      <!-- Bar Handler -->
+      <div class="w-12 h-1 bg-gray-200 rounded-full mx-auto mb-5"></div>
+      
+      <h3 class="text-[18px] font-extrabold text-[#2a2a18] text-center mb-5">Sort Customers</h3>
+      
+      <div class="flex flex-col gap-1.5">
+        @for (opt of ['Name', 'Orders', 'Credit/Balance']; track opt) {
+          <div (click)="customerSortOption.set(opt); isCustomerSortSheetOpen.set(false)"
+               class="flex justify-between items-center py-4 px-5 rounded-2xl cursor-pointer transition
+                      {{ customerSortOption() === opt ? 'bg-[#fffdf5] font-extrabold text-[#f0c355] border-t border-b border-[#f0c355]/30' : 'hover:bg-gray-50 border-t border-b border-transparent text-[#2a2a18]' }}">
+            <span class="text-[15px] font-bold">{{ opt }}</span>
+            @if (customerSortOption() === opt) {
+              <mat-icon class="!text-[22px] text-[#f0c355]">check</mat-icon>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Choose Expense Category Dialog Overlay -->
+@if (isAddExpenseOpen() && activeReportView() === 'expenses') {
+  <div class="fixed inset-0 z-[130] flex items-center justify-center p-4">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fadeIn"
+         (click)="isAddExpenseOpen.set(false)"></div>
+
+    <!-- Dialog Box -->
+    <div class="relative bg-white w-full max-w-sm rounded-[32px] p-6 shadow-2xl animate-scaleUp text-center flex flex-col gap-6">
+      <h3 class="text-[18px] font-extrabold text-[#2a2a18]">Choose category</h3>
+
+      <div class="flex flex-col gap-3">
+        <!-- Shop Expense Option -->
+        <div (click)="selectExpenseCategory('Shop')"
+             class="flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:bg-[#fffdf5] hover:border-[#f0c355]/30 cursor-pointer transition">
+          <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500">
+            <mat-icon class="!text-[22px]">storefront</mat-icon>
+          </div>
+          <span class="text-sm font-bold text-[#2a2a18]">Shop Expense</span>
+        </div>
+
+        <!-- Purchase Invoice Option -->
+        <div (click)="selectExpenseCategory('Purchase')"
+             class="flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:bg-[#fffdf5] hover:border-[#f0c355]/30 cursor-pointer transition">
+          <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500">
+            <mat-icon class="!text-[22px]">shopping_cart</mat-icon>
+          </div>
+          <span class="text-sm font-bold text-[#2a2a18]">Purchase Invoice</span>
+        </div>
+
+        <!-- Staff Payment Option -->
+        <div (click)="selectExpenseCategory('Staff')"
+             class="flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:bg-[#fffdf5] hover:border-[#f0c355]/30 cursor-pointer transition">
+          <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500">
+            <mat-icon class="!text-[22px]">people</mat-icon>
+          </div>
+          <span class="text-sm font-bold text-[#2a2a18]">Staff Payment</span>
+        </div>
+
+        <!-- Other Expense Option -->
+        <div (click)="selectExpenseCategory('Other')"
+             class="flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:bg-[#fffdf5] hover:border-[#f0c355]/30 cursor-pointer transition">
+          <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500">
+            <mat-icon class="!text-[22px]">more_horiz</mat-icon>
+          </div>
+          <span class="text-sm font-bold text-[#2a2a18]">Other Expense</span>
+        </div>
+      </div>
+
+      <button (click)="isAddExpenseOpen.set(false)"
+              class="text-red-500 font-extrabold text-sm hover:opacity-80 transition py-2">
+        Cancel
+      </button>
+    </div>
+  </div>
+}
+
+<!-- Add Expense Form Dialog Overlay -->
+@if (isAddExpenseFormOpen() && activeReportView() === 'expenses') {
+  <div class="fixed inset-0 z-[130] flex items-center justify-center p-4">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fadeIn"
+         (click)="isAddExpenseFormOpen.set(false)"></div>
+
+    <!-- Form Box -->
+    <div class="relative bg-white w-full max-w-lg rounded-[32px] p-6 shadow-2xl animate-scaleUp max-h-[90vh] overflow-y-auto flex flex-col gap-5">
+      <!-- Header -->
+      <div class="flex justify-between items-center">
+        <h3 class="text-[18px] font-extrabold text-[#2a2a18]">Add Expense</h3>
+        <button (click)="isAddExpenseFormOpen.set(false)" class="text-red-500 hover:opacity-80 transition flex items-center justify-center">
+          <mat-icon class="!text-[22px]">close</mat-icon>
+        </button>
+      </div>
+
+      <!-- Date Display Field -->
+      <div class="flex items-center justify-between border border-gray-100 bg-[#fafaf6]/50 rounded-2xl px-4 py-3.5">
+        <span class="text-sm font-bold text-[#2a2a18]">May 19, 2026</span>
+        <mat-icon class="text-gray-400 !text-[20px] w-5 h-5 flex items-center justify-center">calendar_today</mat-icon>
+      </div>
+
+      <!-- Category Selector Display -->
+      <div class="flex flex-col gap-1.5">
+        <span class="text-xs font-bold text-gray-500">Category</span>
+        <button class="w-full bg-[#f0c355] text-[#2a2a18] font-extrabold py-3.5 rounded-2xl pointer-events-none text-sm shadow-sm">
+          {{ expenseCategory() }}
+        </button>
+      </div>
+
+      <!-- Subcategory Dropdown Field -->
+      <div class="flex flex-col gap-1.5">
+        <span class="text-xs font-bold text-gray-500">Subcategory</span>
+        <div class="relative">
+          <select [value]="expenseSubcategory()"
+                  (change)="expenseSubcategory.set($any($event.target).value)"
+                  class="w-full bg-[#fafaf6] border border-gray-100 rounded-2xl px-4 py-3.5 text-sm font-semibold text-[#2a2a18] focus:outline-none appearance-none focus:border-[#f0c355]/40 transition">
+            <option value="Electricity">Electricity</option>
+            <option value="Rent">Rent</option>
+            <option value="Salary">Salary</option>
+            <option value="Inventory">Inventory</option>
+            <option value="Other">Other</option>
+          </select>
+          <mat-icon class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 !text-[20px] pointer-events-none">keyboard_arrow_down</mat-icon>
+        </div>
+      </div>
+
+      <!-- Vendor Input -->
+      <div class="flex flex-col gap-1.5">
+        <span class="text-xs font-bold text-gray-500">Vendor</span>
+        <input type="text"
+               [value]="expenseVendor()"
+               (input)="expenseVendor.set($any($event.target).value)"
+               placeholder="Type vendor name..."
+               class="w-full bg-[#fafaf6] border border-gray-100 rounded-2xl px-4 py-3.5 text-sm font-semibold text-[#2a2a18] placeholder-gray-400 focus:outline-none focus:border-[#f0c355]/40 transition">
+      </div>
+
+      <!-- Description Input -->
+      <div class="flex flex-col gap-1.5">
+        <span class="text-xs font-bold text-gray-500">Description</span>
+        <input type="text"
+               [value]="expenseDescription()"
+               (input)="expenseDescription.set($any($event.target).value)"
+               placeholder="What's it for?"
+               class="w-full bg-[#fafaf6] border border-gray-100 rounded-2xl px-4 py-3.5 text-sm font-semibold text-[#2a2a18] placeholder-gray-400 focus:outline-none focus:border-[#f0c355]/40 transition">
+      </div>
+
+      <!-- Payment Type List selector -->
+      <div class="flex flex-col gap-1.5">
+        <span class="text-xs font-bold text-gray-500">Payment Type</span>
+        <div class="grid grid-cols-4 gap-2">
+          @for (type of ['Cash', 'UPI', 'Card', 'NetBank']; track type) {
+            <div (click)="expensePaymentType.set($any(type))"
+                 class="flex flex-col items-center justify-center py-3 rounded-2xl border border-gray-100 cursor-pointer transition text-center gap-1.5
+                        {{ expensePaymentType() === type ? 'bg-[#f0c355] border-[#f0c355]/40 font-extrabold text-[#2a2a18]' : 'bg-[#fafaf6]/30 text-gray-500 hover:bg-gray-50' }}">
+              <mat-icon class="!text-[22px]">
+                {{ type === 'Cash' ? 'payments' : type === 'UPI' ? 'smartphone' : type === 'Card' ? 'credit_card' : 'desktop_windows' }}
+              </mat-icon>
+              <span class="text-[10px] font-bold">{{ type }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Amount details grid -->
+      <div class="grid grid-cols-3 gap-3">
+        <!-- Amount -->
+        <div class="flex flex-col gap-1.5">
+          <span class="text-xs font-bold text-[#2a2a18]">Amount</span>
+          <input type="text"
+                 [value]="expenseAmount()"
+                 (input)="expenseAmount.set($any($event.target).value)"
+                 placeholder="0.00"
+                 class="w-full bg-[#fafaf6] border border-gray-100 rounded-2xl px-3 py-3.5 text-sm font-semibold text-[#2a2a18] placeholder-gray-400 focus:outline-none text-center focus:border-[#f0c355]/40 transition">
+        </div>
+
+        <!-- Paid -->
+        <div class="flex flex-col gap-1.5">
+          <span class="text-xs font-bold text-[#2a2a18]">Paid</span>
+          <input type="text"
+                 [value]="expensePaid()"
+                 (input)="expensePaid.set($any($event.target).value)"
+                 placeholder="0.00"
+                 class="w-full bg-[#fafaf6] border border-gray-100 rounded-2xl px-3 py-3.5 text-sm font-semibold text-[#2a2a18] placeholder-gray-400 focus:outline-none text-center focus:border-[#f0c355]/40 transition">
+        </div>
+
+        <!-- Remaining -->
+        <div class="flex flex-col gap-1.5">
+          <span class="text-xs font-bold text-[#2a2a18]">Remaining</span>
+          <div class="w-full bg-gray-100 border border-gray-100 rounded-2xl px-3 py-4 text-sm font-extrabold text-gray-500 text-center">
+            {{ expenseRemaining() }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="grid grid-cols-2 gap-4 mt-2">
+        <button (click)="isAddExpenseFormOpen.set(false)"
+                class="w-full bg-gray-100 text-[#2a2a18] font-bold py-3.5 rounded-2xl hover:bg-gray-200 transition text-sm">
+          Cancel
+        </button>
+        <button (click)="saveExpense()"
+                class="w-full bg-[#f0c355] text-[#2a2a18] font-extrabold py-3.5 rounded-2xl shadow-sm hover:opacity-90 active:scale-95 transition text-sm">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+
+
+
+
