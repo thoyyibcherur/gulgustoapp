@@ -1,4 +1,5 @@
 import { Component, inject, signal, computed } from '@angular/core';
+import { Router } from '@angular/router';
 import { PosService } from '../../core/services/pos.service';
 import { TopbarComponent } from '../../shared/components/topbar/topbar.component';
 import { BottomNavComponent, NavTab } from '../../shared/components/bottom-nav/bottom-nav.component';
@@ -18,7 +19,18 @@ import { MatRippleModule } from '@angular/material/core';
 })
 export class DashboardComponent {
   pos = inject(PosService);
+  router = inject(Router);
   activeTab = signal<NavTab>('home');
+
+  // Account / Bluetooth Printer states
+  isPrinterSettingsActive = signal<boolean>(false);
+  bluetoothStatus = signal<'disabled' | 'scanning' | 'enabled'>('disabled');
+  printerSize = signal<'2' | '3'>('2');
+  printingStyle = signal<'image' | 'text'>('image');
+  autoReconnect = signal<boolean>(true);
+  kotPrintingOnly = signal<boolean>(false);
+  bluetoothDevices = signal<{ name: string, address: string, connected: boolean }[]>([]);
+  showBluetoothPrompt = signal<boolean>(false);
 
   // Catalogue State
   catalogueSearchQuery = signal<string>('');
@@ -368,5 +380,44 @@ export class DashboardComponent {
     this.clearCart();
     this.isCheckoutActive.set(false);
     this.activeTab.set('home');
+  }
+
+  // Account & Bluetooth Printer Methods
+  leaveDashboard() {
+    this.router.navigate(['/']);
+  }
+
+  scanBluetoothDevices() {
+    if (this.bluetoothStatus() === 'disabled') {
+      this.requestBluetoothPermission();
+      return;
+    }
+    this.bluetoothStatus.set('scanning');
+    setTimeout(() => {
+      this.bluetoothStatus.set('enabled');
+      this.bluetoothDevices.set([
+        { name: 'RPP300-E Thermal Printer', address: '00:11:22:33:44:55', connected: false }
+      ]);
+    }, 1500);
+  }
+
+  requestBluetoothPermission() {
+    this.showBluetoothPrompt.set(true);
+  }
+
+  declineBluetoothPermission() {
+    this.showBluetoothPrompt.set(false);
+  }
+
+  allowBluetoothPermission() {
+    this.showBluetoothPrompt.set(false);
+    this.bluetoothStatus.set('enabled');
+    this.scanBluetoothDevices();
+  }
+
+  toggleDeviceConnection(device: any) {
+    this.bluetoothDevices.update(list =>
+      list.map(d => d.address === device.address ? { ...d, connected: !d.connected } : d)
+    );
   }
 }
