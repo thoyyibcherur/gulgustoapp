@@ -16,7 +16,7 @@ export type NavTab = 'home' | 'reports' | 'catalogue' | 'account' | 'pos';
 
         <div matRipple [matRippleColor]="'rgba(241,225,200,0.1)'"
              class="flex-1 flex flex-col items-center gap-0.5 py-1.5 cursor-pointer rounded-xl transition-colors"
-             [class.text-[#c88aff]]="active() === 'home'"
+             [class.text-[#f1e1c8]]="active() === 'home'"
              [class.text-[#f1e1c8]/50]="active() !== 'home'"
              (click)="tabChange.emit('home')">
           <mat-icon class="!text-[20px]">home</mat-icon>
@@ -25,7 +25,7 @@ export type NavTab = 'home' | 'reports' | 'catalogue' | 'account' | 'pos';
 
         <div matRipple [matRippleColor]="'rgba(241,225,200,0.1)'"
              class="flex-1 flex flex-col items-center gap-0.5 py-1.5 cursor-pointer rounded-xl transition-colors"
-             [class.text-[#c88aff]]="active() === 'reports'"
+             [class.text-[#f1e1c8]]="active() === 'reports'"
              [class.text-[#f1e1c8]/50]="active() !== 'reports'"
              (click)="tabChange.emit('reports')">
           <mat-icon class="!text-[20px]">bar_chart</mat-icon>
@@ -38,15 +38,15 @@ export type NavTab = 'home' | 'reports' | 'catalogue' | 'account' | 'pos';
                       shadow-lg border-[4px] border-[#727339] -mt-6 transition-all duration-200
                       hover:scale-105 hover:shadow-xl active:scale-95
                       {{ active() === 'pos'
-                         ? 'bg-gradient-to-br from-[#f0c355] to-[#c89b27] text-[#2a2a18] shadow-[#c89b27]/45'
-                         : 'bg-gradient-to-br from-[#7b35a3] to-[#4e2069] text-white shadow-[#632a85]/45' }}">
+                         ? 'bg-gradient-to-br from-[#632a85] to-[#451a66] text-[#f1e1c8] shadow-[#632a85]/45'
+                         : 'bg-gradient-to-br from-[#727339] to-[#555627] text-[#f1e1c8] shadow-[#727339]/45' }}">
             <mat-icon class="!text-[22px]">add</mat-icon>
           </div>
         </div>
 
         <div matRipple [matRippleColor]="'rgba(241,225,200,0.1)'"
              class="flex-1 flex flex-col items-center gap-0.5 py-1.5 cursor-pointer rounded-xl transition-colors"
-             [class.text-[#c88aff]]="active() === 'catalogue'"
+             [class.text-[#f1e1c8]]="active() === 'catalogue'"
              [class.text-[#f1e1c8]/50]="active() !== 'catalogue'"
              (click)="tabChange.emit('catalogue')">
           <mat-icon class="!text-[20px]">inventory_2</mat-icon>
@@ -55,7 +55,7 @@ export type NavTab = 'home' | 'reports' | 'catalogue' | 'account' | 'pos';
 
         <div matRipple [matRippleColor]="'rgba(241,225,200,0.1)'"
              class="flex-1 flex flex-col items-center gap-0.5 py-1.5 cursor-pointer rounded-xl transition-colors"
-             [class.text-[#c88aff]]="active() === 'account'"
+             [class.text-[#f1e1c8]]="active() === 'account'"
              [class.text-[#f1e1c8]/50]="active() !== 'account'"
              (click)="tabChange.emit('account')">
           <mat-icon class="!text-[20px]">person</mat-icon>

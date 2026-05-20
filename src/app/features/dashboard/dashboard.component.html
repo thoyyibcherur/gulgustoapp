@@ -10,7 +10,7 @@
       <section class="flex flex-col gap-5">
 
         <!-- Today's Sales Card (purple gradient) -->
-        <div class="rounded-3xl p-7 bg-gradient-to-br from-[#7b35a3] to-[#4e2069]
+        <div class="rounded-3xl p-7 bg-gradient-to-br from-[#632a85] to-[#451662]
                     text-white shadow-2xl shadow-[#632a85]/30 relative overflow-hidden">
           <div class="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/[0.06]"></div>
           <span class="text-[#f1e1c8]/90 text-xs font-bold uppercase tracking-widest">
@@ -33,14 +33,14 @@
         <div class="grid grid-cols-2 gap-4">
           <div class="rounded-2xl p-5 bg-[#727339] text-[#f1e1c8] shadow-lg shadow-[#727339]/20">
             <div class="flex items-center gap-1.5 text-[#f1e1c8]/70 text-[10px] font-bold uppercase tracking-wider mb-2">
-              <mat-icon class="!text-sm text-[#c88aff]">trending_up</mat-icon>
+              <mat-icon class="!text-sm text-[#632a85]">trending_up</mat-icon>
               Avg Sale
             </div>
             <span class="text-2xl font-extrabold">{{ pos.avgDisplay() }}</span>
           </div>
           <div class="rounded-2xl p-5 bg-[#727339] text-[#f1e1c8] shadow-lg shadow-[#727339]/20">
             <div class="flex items-center gap-1.5 text-[#f1e1c8]/70 text-[10px] font-bold uppercase tracking-wider mb-2">
-              <mat-icon class="!text-sm text-[#c88aff]">receipt_long</mat-icon>
+              <mat-icon class="!text-sm text-[#632a85]">receipt_long</mat-icon>
               Bills Count
             </div>
             <span class="text-2xl font-extrabold">{{ pos.billsDisplay() }}</span>
@@ -92,7 +92,7 @@
             <button (click)="addInvoice()"
                     [disabled]="pos.isLoading()"
                     class="flex items-center gap-2 px-6 py-2.5 rounded-full
-                           bg-gradient-to-r from-[#7b35a3] to-[#4e2069] text-white
+                           bg-gradient-to-r from-[#632a85] to-[#451662] text-white
                            text-sm font-bold shadow-lg shadow-[#632a85]/25
                            hover:shadow-xl hover:-translate-y-0.5 active:scale-95
                            transition-all disabled:opacity-60">
@@ -123,7 +123,7 @@
       @if (!isCheckoutActive()) {
         @if (isPOSMode()) {
           <!-- TOP SEARCH BAR & KOT -->
-          <header class="-mx-4 -mt-5 bg-[#f0c355] px-6 py-4 flex gap-4 items-center justify-between rounded-b-[32px] shadow-sm">
+          <header class="-mx-4 -mt-5 bg-[#632a85] px-6 py-4 flex gap-4 items-center justify-between rounded-b-[32px] shadow-sm">
             <div class="flex-1 relative">
               <mat-icon class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 !text-[20px] w-5 h-5 flex items-center justify-center">search</mat-icon>
               <input type="text"
@@ -133,7 +133,7 @@
                      class="w-full bg-white rounded-full pl-12 pr-4 py-3 text-sm font-semibold text-[#2a2a18] placeholder-gray-400 focus:outline-none shadow-sm transition">
             </div>
             <button (click)="printKOT()"
-                    class="bg-[#2a2a18] text-[#f0c355] font-extrabold text-xs px-5 py-3 rounded-2xl shadow-sm flex items-center gap-1.5 hover:opacity-90 active:scale-95 transition">
+                    class="bg-[#2a2a18] text-[#632a85] font-extrabold text-xs px-5 py-3 rounded-2xl shadow-sm flex items-center gap-1.5 hover:opacity-90 active:scale-95 transition">
               <mat-icon class="!text-sm">print</mat-icon>
               KOT
             </button>
@@ -145,7 +145,7 @@
             <!-- Draft Tabs (Row at the top of catalogue view) -->
             <div class="flex items-center gap-2 px-1">
               <!-- Active Tab 1 -->
-              <button class="bg-[#f0c355] text-[#2a2a18] w-10 h-10 rounded-2xl text-sm font-extrabold shadow-sm flex items-center justify-center">1</button>
+              <button class="bg-[#632a85] text-[#f1e1c8] w-10 h-10 rounded-2xl text-sm font-extrabold shadow-sm flex items-center justify-center">1</button>
               <!-- + New Button -->
               <button (click)="clearCart()" class="border border-green-600/30 bg-green-50/50 text-green-600 px-4 h-10 rounded-2xl text-xs font-bold flex items-center gap-1.5 active:scale-95 transition">
                 <span class="text-base font-extrabold">+</span> New
@@ -170,7 +170,7 @@
                 @for (cat of ['All', 'Base', 'Combo', 'Middle', 'No']; track cat) {
                   <button (click)="activeCategory.set(cat)"
                           class="w-full py-4 text-center font-extrabold text-xs rounded-[18px] transition duration-200 active:scale-95 shadow-sm
-                                 {{ activeCategory() === cat ? 'bg-[#f0c355] text-[#2a2a18]' : 'bg-white text-gray-500 hover:bg-gray-50' }}">
+                                 {{ activeCategory() === cat ? 'bg-[#632a85] text-[#f1e1c8]' : 'bg-white text-gray-500 hover:bg-gray-50' }}">
                     {{ cat }}
                   </button>
                 }
@@ -214,7 +214,7 @@
                       <div class="w-full flex items-center justify-between gap-1">
                         <!-- Decrement button -->
                         <button (click)="decrementProductQuantity(prod)"
-                                class="w-9 h-9 rounded-full bg-white border border-[#f0c355]/40 text-[#2a2a18] flex items-center justify-center font-extrabold hover:bg-gray-50 transition active:scale-95">
+                                class="w-9 h-9 rounded-full bg-white border border-[#632a85]/40 text-[#2a2a18] flex items-center justify-center font-extrabold hover:bg-gray-50 transition active:scale-95">
                           —
                         </button>
                         <!-- Quantity text input -->
@@ -227,7 +227,7 @@
                       </div>
                     } @else {
                       <button (click)="addProductToCart(prod)"
-                              class="w-full bg-[#f0c355] text-[#2a2a18] font-extrabold py-2.5 rounded-xl text-xs hover:opacity-90 active:scale-95 shadow-sm transition flex items-center justify-center gap-1.5">
+                              class="w-full bg-[#632a85] text-[#f1e1c8] font-extrabold py-2.5 rounded-xl text-xs hover:opacity-90 active:scale-95 shadow-sm transition flex items-center justify-center gap-1.5">
                         Add
                         <mat-icon class="!text-sm w-3.5 h-3.5 flex items-center justify-center">shopping_cart</mat-icon>
                       </button>
@@ -246,7 +246,7 @@
           <!-- CART BOTTOM OVERLAY PANEL (Only visible if cart not empty and not in checkout) -->
           @if (cart().length > 0) {
             <div class="fixed bottom-24 left-0 right-0 z-40 px-4 max-w-lg mx-auto pointer-events-none animate-[slideUp_0.25s_ease]">
-              <div class="bg-[#f0c355] rounded-3xl p-5 shadow-2xl pointer-events-auto border border-[#727339]/12 flex flex-col gap-3">
+              <div class="bg-[#632a85] rounded-3xl p-5 shadow-2xl pointer-events-auto border border-[#727339]/12 flex flex-col gap-3">
                 <div class="flex justify-between items-center text-[#2a2a18]">
                   <div class="flex items-center gap-2">
                     <mat-icon class="!text-lg">shopping_cart</mat-icon>
@@ -262,7 +262,7 @@
                 <div class="flex justify-between items-center pt-1">
                   <span class="text-base font-extrabold text-[#2a2a18]">Total: ₹{{ cartTotalPrice().toFixed(2) }}</span>
                   <button (click)="isCheckoutActive.set(true)"
-                          class="bg-[#2a2a18] text-[#f0c355] font-extrabold text-xs px-6 py-3.5 rounded-2xl shadow-sm flex items-center gap-2 hover:opacity-90 active:scale-95 transition">
+                          class="bg-[#2a2a18] text-[#632a85] font-extrabold text-xs px-6 py-3.5 rounded-2xl shadow-sm flex items-center gap-2 hover:opacity-90 active:scale-95 transition">
                     Checkout
                     <span class="text-sm">➔</span>
                   </button>
@@ -273,7 +273,7 @@
         } @else {
           <!-- PRODUCT MANAGER MODE (AS SHOWN IN THE NEW SCREENSHOT) -->
           <!-- TOP SEARCH BAR -->
-          <header class="-mx-4 -mt-5 bg-[#f0c355] px-6 py-4 flex gap-4 items-center justify-between rounded-b-[32px] shadow-sm select-none">
+          <header class="-mx-4 -mt-5 bg-[#632a85] px-6 py-4 flex gap-4 items-center justify-between rounded-b-[32px] shadow-sm select-none">
             <div class="flex-1 relative">
               <mat-icon class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 !text-[20px] w-5 h-5 flex items-center justify-center">search</mat-icon>
               <input type="text"
@@ -291,7 +291,7 @@
               @for (cat of categories(); track cat) {
                 <button (click)="activeCategory.set(cat)"
                         class="w-full py-4 text-center font-extrabold text-xs rounded-[18px] transition duration-200 active:scale-95 shadow-sm
-                               {{ activeCategory() === cat ? 'bg-[#f0c355] text-[#2a2a18]' : 'bg-white text-gray-500 hover:bg-gray-50' }}">
+                               {{ activeCategory() === cat ? 'bg-[#632a85] text-[#f1e1c8]' : 'bg-white text-gray-500 hover:bg-gray-50' }}">
                   {{ cat }}
                 </button>
               }
@@ -315,7 +315,7 @@
                   </div>
                   <!-- Edit action button -->
                   <button (click)="openEditProductModal(prod)"
-                          class="bg-[#f0c355] text-[#2a2a18] font-extrabold text-xs px-5 py-2.5 rounded-xl shadow-xs hover:opacity-90 active:scale-95 transition flex-shrink-0">
+                          class="bg-[#632a85] text-[#f1e1c8] font-extrabold text-xs px-5 py-2.5 rounded-xl shadow-xs hover:opacity-90 active:scale-95 transition flex-shrink-0">
                     Edit
                   </button>
                 </div>
@@ -331,7 +331,7 @@
           <!-- Bottom floating Add Product button -->
           <div class="fixed bottom-24 left-0 right-0 z-40 px-4 flex justify-center pointer-events-none">
             <button (click)="openAddProductModal()"
-                    class="pointer-events-auto bg-[#f0c355] text-[#2a2a18] font-extrabold text-xs px-8 py-3.5 rounded-2xl shadow-lg hover:opacity-95 active:scale-95 transition flex items-center gap-1.5 border border-[#727339]/10">
+                    class="pointer-events-auto bg-[#632a85] text-[#f1e1c8] font-extrabold text-xs px-8 py-3.5 rounded-2xl shadow-lg hover:opacity-95 active:scale-95 transition flex items-center gap-1.5 border border-[#727339]/10">
               <span class="text-sm font-bold">+</span>
               Add Product
             </button>
@@ -340,7 +340,7 @@
       } @else {
         @if (!isBillSettingsActive()) {
           <!-- NEW BILL CHECKOUT PAGE -->
-          <header class="-mx-4 -mt-5 bg-[#f0c355] px-6 py-4 flex items-center justify-between rounded-b-[32px] shadow-sm select-none">
+          <header class="-mx-4 -mt-5 bg-[#632a85] px-6 py-4 flex items-center justify-between rounded-b-[32px] shadow-sm select-none">
             <button (click)="isCheckoutActive.set(false)" class="text-[#2a2a18] hover:opacity-80 transition flex items-center justify-center w-8 h-8">
               <mat-icon class="!text-lg font-extrabold">arrow_back</mat-icon>
             </button>
@@ -356,7 +356,7 @@
               @for (type of ['Sale', 'Dine-In', 'Takeaway']; track type) {
                 <button (click)="checkoutOrderType.set($any(type))"
                         class="flex-1 py-3 text-center text-xs font-bold rounded-xl transition duration-200
-                               {{ checkoutOrderType() === type ? 'bg-[#f0c355] text-[#2a2a18] shadow-sm' : 'text-gray-500 hover:bg-gray-50/50' }}">
+                               {{ checkoutOrderType() === type ? 'bg-[#632a85] text-[#f1e1c8] shadow-sm' : 'text-gray-500 hover:bg-gray-50/50' }}">
                   {{ type }}
                 </button>
               }
@@ -370,12 +370,12 @@
                        [value]="checkoutCustomerName()"
                        (input)="checkoutCustomerName.set($any($event.target).value)"
                        placeholder="Name"
-                       class="w-full bg-gray-50/80 border border-gray-200 rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[#f0c355]">
+                       class="w-full bg-gray-50/80 border border-gray-200 rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[#632a85]">
                 <input type="text"
                        [value]="checkoutCustomerPhone()"
                        (input)="checkoutCustomerPhone.set($any($event.target).value)"
                        placeholder="Phone"
-                       class="w-full bg-gray-50/80 border border-gray-200 rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[#f0c355]">
+                       class="w-full bg-gray-50/80 border border-gray-200 rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[#632a85]">
               </div>
             </div>
 
@@ -409,11 +409,11 @@
 
             <!-- Middle actions buttons -->
             <div class="grid grid-cols-2 gap-4">
-              <button class="bg-[#f0c355]/15 border border-[#f0c355]/30 text-[#2a2a18] py-3.5 rounded-2xl text-xs font-bold hover:bg-[#f0c355]/20 active:scale-[0.98] transition">
+              <button class="bg-[#632a85]/15 border border-[#632a85]/30 text-[#2a2a18] py-3.5 rounded-2xl text-xs font-bold hover:bg-[#632a85]/20 active:scale-[0.98] transition">
                 Select Charges
               </button>
               <button (click)="isDiscountActive.set(!isDiscountActive())"
-                      class="bg-[#f0c355] text-[#2a2a18] py-3.5 rounded-2xl text-xs font-bold hover:opacity-90 active:scale-[0.98] transition shadow-sm">
+                      class="bg-[#632a85] text-[#f1e1c8] py-3.5 rounded-2xl text-xs font-bold hover:opacity-90 active:scale-[0.98] transition shadow-sm">
                 {{ isDiscountActive() ? 'Hide Discount' : 'Add Discount' }}
               </button>
             </div>
@@ -424,11 +424,11 @@
                 
                 <div class="bg-gray-100 p-0.5 rounded-full flex border border-gray-200">
                   <button (click)="discountType.set('amount')"
-                          class="px-4 py-1.5 text-xs font-bold rounded-full transition {{ discountType() === 'amount' ? 'bg-[#f0c355] text-[#2a2a18] shadow-sm' : 'text-gray-500' }}">
+                          class="px-4 py-1.5 text-xs font-bold rounded-full transition {{ discountType() === 'amount' ? 'bg-[#632a85] text-[#f1e1c8] shadow-sm' : 'text-gray-500' }}">
                     ₹
                   </button>
                   <button (click)="discountType.set('percentage')"
-                          class="px-4 py-1.5 text-xs font-bold rounded-full transition {{ discountType() === 'percentage' ? 'bg-[#f0c355] text-[#2a2a18] shadow-sm' : 'text-gray-500' }}">
+                          class="px-4 py-1.5 text-xs font-bold rounded-full transition {{ discountType() === 'percentage' ? 'bg-[#632a85] text-[#f1e1c8] shadow-sm' : 'text-gray-500' }}">
                     %
                   </button>
                 </div>
@@ -461,11 +461,11 @@
                 <span class="text-xs font-bold text-gray-500">Payment Method</span>
                 <div class="bg-gray-100 p-0.5 rounded-full flex border border-gray-200">
                   <button (click)="paymentMode.set('single'); selectedPaymentMethods.set(['Cash'])"
-                          class="px-4 py-1.5 text-[10px] font-bold rounded-full transition {{ paymentMode() === 'single' ? 'bg-[#f0c355] text-[#2a2a18] shadow-sm' : 'text-gray-500' }}">
+                          class="px-4 py-1.5 text-[10px] font-bold rounded-full transition {{ paymentMode() === 'single' ? 'bg-[#632a85] text-[#f1e1c8] shadow-sm' : 'text-gray-500' }}">
                     Single
                   </button>
                   <button (click)="paymentMode.set('split')"
-                          class="px-4 py-1.5 text-[10px] font-bold rounded-full transition {{ paymentMode() === 'split' ? 'bg-[#f0c355] text-[#2a2a18] shadow-sm' : 'text-gray-500' }}">
+                          class="px-4 py-1.5 text-[10px] font-bold rounded-full transition {{ paymentMode() === 'split' ? 'bg-[#632a85] text-[#f1e1c8] shadow-sm' : 'text-gray-500' }}">
                     Split
                   </button>
                 </div>
@@ -475,7 +475,7 @@
                 @for (method of ['Cash', 'UPI', 'Card', 'Credit']; track method) {
                   <button (click)="togglePaymentMethod(method)"
                           class="flex flex-col items-center gap-1.5 py-3 rounded-2xl border transition duration-200 active:scale-95
-                                 {{ selectedPaymentMethods().includes(method) ? 'bg-[#f0c355]/20 border-[#f0c355] text-[#2a2a18]' : 'bg-gray-50 border-gray-100 text-gray-500 hover:bg-gray-100/50' }}">
+                                 {{ selectedPaymentMethods().includes(method) ? 'bg-[#632a85]/20 border-[#632a85] text-[#2a2a18]' : 'bg-gray-50 border-gray-100 text-gray-500 hover:bg-gray-100/50' }}">
                     @if (method === 'Cash') {
                       <div class="relative w-12 h-8 rounded-lg bg-[#ebf9f1] border border-[#a1ebd2]/60 flex items-center justify-center overflow-hidden mb-0.5">
                         <div class="w-8 h-4.5 rounded bg-[#48c78e] relative flex items-center justify-center shadow-xs">
@@ -520,7 +520,7 @@
                       <input type="text"
                              [value]="getSplitAmountValue(method)"
                              (input)="updateSplitAmount(method, $any($event.target).value)"
-                             class="bg-white border border-gray-200 rounded-xl px-3 py-1.5 text-xs font-bold text-[#2a2a18] text-right w-28 focus:outline-none focus:border-[#f0c355]">
+                             class="bg-white border border-gray-200 rounded-xl px-3 py-1.5 text-xs font-bold text-[#2a2a18] text-right w-28 focus:outline-none focus:border-[#632a85]">
                     </div>
                   }
                 </div>
@@ -535,7 +535,7 @@
                           (input)="checkoutNote.set($any($event.target).value)"
                           placeholder="Enter order notes..."
                           rows="4"
-                          class="w-full bg-gray-50/80 border border-gray-200 rounded-2xl px-4 py-3 pb-16 text-xs font-semibold focus:outline-none focus:border-[#f0c355] resize-none"></textarea>
+                          class="w-full bg-gray-50/80 border border-gray-200 rounded-2xl px-4 py-3 pb-16 text-xs font-semibold focus:outline-none focus:border-[#632a85] resize-none"></textarea>
                 <!-- Floating action panel -->
                 <div class="absolute bottom-3 right-3 bg-white border border-gray-200/80 rounded-2xl p-1 flex items-center gap-1 shadow-sm">
                   <button class="bg-white hover:bg-gray-50 active:scale-95 text-[#2a2a18] px-3 py-2 rounded-xl text-[10px] font-extrabold flex items-center gap-1.5 transition">
@@ -560,7 +560,7 @@
               <span class="text-xs font-bold pl-3">{{ cart().length }} Product{{ cart().length > 1 ? 's' : '' }}</span>
               <div class="flex items-center gap-1.5">
                 <button (click)="saveBill()"
-                        class="bg-[#f0c355] text-[#2a2a18] font-extrabold text-xs pl-6 pr-4 py-3 rounded-2xl shadow-sm hover:opacity-90 active:scale-95 transition flex items-center gap-3">
+                        class="bg-[#632a85] text-[#f1e1c8] font-extrabold text-xs pl-6 pr-4 py-3 rounded-2xl shadow-sm hover:opacity-90 active:scale-95 transition flex items-center gap-3">
                   Print Bill
                   <div class="h-4 w-px bg-[#2a2a18]/25"></div>
                   <mat-icon class="!text-sm">more_vert</mat-icon>
@@ -635,7 +635,7 @@
                   </div>
                   <span class="text-xs font-bold text-[#2a2a18]">Print Settings</span>
                 </div>
-                <button class="border border-[#f0c355]/30 bg-amber-50/50 text-[#f0c355] px-4 py-2 rounded-2xl text-[10px] font-bold flex items-center gap-1 hover:bg-[#f0c355]/10 transition">
+                <button class="border border-[#632a85]/30 bg-amber-50/50 text-[#632a85] px-4 py-2 rounded-2xl text-[10px] font-bold flex items-center gap-1 hover:bg-[#632a85]/10 transition">
                   <mat-icon class="!text-xs">settings</mat-icon>
                   Configure
                 </button>
@@ -728,7 +728,7 @@
                   </div>
                   <span class="text-xs font-bold text-[#2a2a18]">Additional Charges</span>
                 </div>
-                <button class="border border-[#f0c355]/30 bg-amber-50/50 text-[#f0c355] px-4 py-2 rounded-2xl text-[10px] font-bold flex items-center gap-1 hover:bg-[#f0c355]/10 transition">
+                <button class="border border-[#632a85]/30 bg-amber-50/50 text-[#632a85] px-4 py-2 rounded-2xl text-[10px] font-bold flex items-center gap-1 hover:bg-[#632a85]/10 transition">
                   <span class="text-sm font-bold">+</span>
                   Add
                 </button>
@@ -788,14 +788,14 @@
                         (input)="checkoutNote.set($any($event.target).value)"
                         placeholder="Enter custom bill note..."
                         rows="3"
-                        class="w-full bg-gray-50/80 border border-gray-200 rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[#f0c355] resize-none"></textarea>
+                        class="w-full bg-gray-50/80 border border-gray-200 rounded-2xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-[#632a85] resize-none"></textarea>
             </div>
           </div>
 
           <!-- Save Settings Sticky Footer -->
           <footer class="fixed bottom-5 left-0 right-0 z-50 flex justify-center pointer-events-none px-4">
             <button (click)="isBillSettingsActive.set(false)"
-                    class="bg-[#f0c355] text-[#2a2a18] font-extrabold text-xs py-4 rounded-[26px] shadow-2xl hover:opacity-95 active:scale-95 transition pointer-events-auto w-[90%] max-w-[440px] flex items-center justify-center gap-2">
+                    class="bg-[#632a85] text-[#f1e1c8] font-extrabold text-xs py-4 rounded-[26px] shadow-2xl hover:opacity-95 active:scale-95 transition pointer-events-auto w-[90%] max-w-[440px] flex items-center justify-center gap-2">
               <mat-icon class="!text-sm">check</mat-icon>
               Save Settings
             </button>
@@ -812,16 +812,16 @@
       <main class="flex-1 w-full max-w-md mx-auto px-4 pt-5 pb-28 flex flex-col gap-5 select-none animate-[fadeIn_0.2s_ease]">
         
         <!-- Business Profile Card (gold theme matching reference) -->
-        <div class="bg-[#f0c355] rounded-[32px] p-6 shadow-lg border border-[#727339]/10 relative overflow-hidden flex items-center gap-5">
+        <div class="bg-[#632a85] rounded-[32px] p-6 shadow-lg border border-[#727339]/10 relative overflow-hidden flex items-center gap-5">
           <div class="w-18 h-18 rounded-full bg-white flex items-center justify-center text-[#727339] font-serif text-3xl font-extrabold shadow-sm flex-shrink-0">
             GG
           </div>
           <div class="flex flex-col gap-1 min-w-0">
-            <span class="text-[10px] font-extrabold text-[#727339]/80 uppercase tracking-widest">Business Profile</span>
-            <h2 class="text-xl font-black text-[#2a2a18] leading-tight">GulGusto</h2>
-            <span class="text-xs font-bold text-[#2a2a18] opacity-90">9446731741</span>
-            <span class="text-xs font-bold text-[#2a2a18] opacity-90">Dilshad</span>
-            <p class="text-[10px] font-semibold text-[#2a2a18] opacity-75 mt-0.5 leading-normal">
+            <span class="text-[10px] font-extrabold text-white uppercase tracking-widest">Business Profile</span>
+            <h2 class="text-xl font-black text-white leading-tight">GulGusto</h2>
+            <span class="text-xs font-bold text-white opacity-90">9446731741</span>
+            <span class="text-xs font-bold text-white opacity-90">Dilshad</span>
+            <p class="text-[10px] font-semibold text-white opacity-75 mt-0.5 leading-normal">
               Gujarati street kozhikode,<br>Kozhikode, Kozhikode, Kerala
             </p>
           </div>
@@ -838,38 +838,38 @@
           <div class="grid grid-cols-3 gap-3">
             <!-- Printer Button -->
             <button (click)="isPrinterSettingsActive.set(true)"
-                    class="bg-gray-50/70 border border-gray-100 rounded-2xl py-4 flex flex-col items-center justify-center gap-2 hover:bg-[#f0c355]/10 active:scale-95 transition">
+                    class="bg-gray-50/70 border border-gray-100 rounded-2xl py-4 flex flex-col items-center justify-center gap-2 hover:bg-[#632a85]/10 active:scale-95 transition">
               <mat-icon class="text-emerald-500 !text-[26px] w-7 h-7 flex items-center justify-center">print</mat-icon>
               <span class="text-[10px] font-extrabold text-[#2a2a18]">Printer</span>
             </button>
 
             <!-- Bill Settings Button -->
             <button (click)="isBillSettingsActive.set(true); switchTab('catalogue')"
-                    class="bg-gray-50/70 border border-gray-100 rounded-2xl py-4 flex flex-col items-center justify-center gap-2 hover:bg-[#f0c355]/10 active:scale-95 transition">
-              <mat-icon class="text-[#c88aff] !text-[26px] w-7 h-7 flex items-center justify-center">receipt_long</mat-icon>
+                    class="bg-gray-50/70 border border-gray-100 rounded-2xl py-4 flex flex-col items-center justify-center gap-2 hover:bg-[#632a85]/10 active:scale-95 transition">
+              <mat-icon class="text-[#632a85] !text-[26px] w-7 h-7 flex items-center justify-center">receipt_long</mat-icon>
               <span class="text-[10px] font-extrabold text-[#2a2a18]">Bill Settings</span>
             </button>
 
             <!-- Edit Profile Button -->
-            <button class="bg-gray-50/70 border border-gray-100 rounded-2xl py-4 flex flex-col items-center justify-center gap-2 hover:bg-[#f0c355]/10 active:scale-95 transition">
+            <button class="bg-gray-50/70 border border-gray-100 rounded-2xl py-4 flex flex-col items-center justify-center gap-2 hover:bg-[#632a85]/10 active:scale-95 transition">
               <mat-icon class="text-blue-500 !text-[26px] w-7 h-7 flex items-center justify-center">person</mat-icon>
               <span class="text-[10px] font-extrabold text-[#2a2a18]">Edit Profile</span>
             </button>
 
             <!-- Settings Button -->
-            <button class="bg-gray-50/70 border border-gray-100 rounded-2xl py-4 flex flex-col items-center justify-center gap-2 hover:bg-[#f0c355]/10 active:scale-95 transition">
+            <button class="bg-gray-50/70 border border-gray-100 rounded-2xl py-4 flex flex-col items-center justify-center gap-2 hover:bg-[#632a85]/10 active:scale-95 transition">
               <mat-icon class="text-[#727339] !text-[26px] w-7 h-7 flex items-center justify-center">settings</mat-icon>
               <span class="text-[10px] font-extrabold text-[#2a2a18]">Settings</span>
             </button>
 
             <!-- Add Cashier Button -->
-            <button class="bg-gray-50/70 border border-gray-100 rounded-2xl py-4 flex flex-col items-center justify-center gap-2 hover:bg-[#f0c355]/10 active:scale-95 transition">
+            <button class="bg-gray-50/70 border border-gray-100 rounded-2xl py-4 flex flex-col items-center justify-center gap-2 hover:bg-[#632a85]/10 active:scale-95 transition">
               <mat-icon class="text-sky-500 !text-[26px] w-7 h-7 flex items-center justify-center">person_add</mat-icon>
               <span class="text-[10px] font-extrabold text-[#2a2a18]">Add Cashier</span>
             </button>
 
             <!-- Attendee Button -->
-            <button class="bg-gray-50/70 border border-gray-100 rounded-2xl py-4 flex flex-col items-center justify-center gap-2 hover:bg-[#f0c355]/10 active:scale-95 transition">
+            <button class="bg-gray-50/70 border border-gray-100 rounded-2xl py-4 flex flex-col items-center justify-center gap-2 hover:bg-[#632a85]/10 active:scale-95 transition">
               <mat-icon class="text-amber-500 !text-[26px] w-7 h-7 flex items-center justify-center">people</mat-icon>
               <span class="text-[10px] font-extrabold text-[#2a2a18]">Attendee</span>
             </button>
@@ -934,7 +934,7 @@
           </button>
           <span class="text-sm font-extrabold text-[#2a2a18]">Bluetooth Printers</span>
           <button (click)="scanBluetoothDevices()"
-                  class="bg-[#f0c355] text-[#2a2a18] font-extrabold text-xs px-5 py-2 rounded-xl shadow-xs hover:opacity-90 active:scale-95 transition">
+                  class="bg-[#632a85] text-[#f1e1c8] font-extrabold text-xs px-5 py-2 rounded-xl shadow-xs hover:opacity-90 active:scale-95 transition">
             Scan
           </button>
         </header>
@@ -1028,12 +1028,12 @@
               <div class="bg-gray-50 p-1 rounded-2xl flex gap-1 border border-gray-150">
                 <button (click)="printerSize.set('2')"
                         class="flex-1 py-3 text-center text-xs font-extrabold rounded-xl transition duration-150 active:scale-98
-                               {{ printerSize() === '2' ? 'bg-[#f0c355] text-[#2a2a18] shadow-sm' : 'text-gray-400 hover:bg-gray-100' }}">
+                               {{ printerSize() === '2' ? 'bg-[#632a85] text-[#f1e1c8] shadow-sm' : 'text-gray-400 hover:bg-gray-100' }}">
                   2 inch
                 </button>
                 <button (click)="printerSize.set('3')"
                         class="flex-1 py-3 text-center text-xs font-extrabold rounded-xl transition duration-150 active:scale-98
-                               {{ printerSize() === '3' ? 'bg-[#f0c355] text-[#2a2a18] shadow-sm' : 'text-gray-400 hover:bg-gray-100' }}">
+                               {{ printerSize() === '3' ? 'bg-[#632a85] text-[#f1e1c8] shadow-sm' : 'text-gray-400 hover:bg-gray-100' }}">
                   3 inch
                 </button>
               </div>
@@ -1046,12 +1046,12 @@
               <div class="flex gap-2">
                 <button (click)="printingStyle.set('image')"
                         class="flex-1 py-3 text-center text-xs font-extrabold rounded-2xl border-2 transition duration-150 active:scale-98
-                               {{ printingStyle() === 'image' ? 'border-[#f0c355] bg-amber-50/15 text-[#2a2a18]' : 'border-gray-200 text-gray-400' }}">
+                               {{ printingStyle() === 'image' ? 'border-[#632a85] bg-amber-50/15 text-[#2a2a18]' : 'border-gray-200 text-gray-400' }}">
                   Image Based
                 </button>
                 <button (click)="printingStyle.set('text')"
                         class="flex-1 py-3 text-center text-xs font-extrabold rounded-2xl border-2 transition duration-150 active:scale-98
-                               {{ printingStyle() === 'text' ? 'border-[#f0c355] bg-amber-50/15 text-[#2a2a18]' : 'border-gray-200 text-gray-400' }}">
+                               {{ printingStyle() === 'text' ? 'border-[#632a85] bg-amber-50/15 text-[#2a2a18]' : 'border-gray-200 text-gray-400' }}">
                   Text Based
                 </button>
               </div>
@@ -1164,7 +1164,7 @@
                    [value]="modalProductName()"
                    (input)="modalProductName.set($any($event.target).value)"
                    placeholder="Enter product name"
-                   class="w-full bg-gray-50/80 border border-gray-200 rounded-xl px-4 py-3 text-[#2a2a18] text-xs font-bold focus:outline-none focus:border-[#f0c355]">
+                   class="w-full bg-gray-50/80 border border-gray-200 rounded-xl px-4 py-3 text-[#2a2a18] text-xs font-bold focus:outline-none focus:border-[#632a85]">
           </div>
 
           <!-- Product Category with + New Button -->
@@ -1174,7 +1174,7 @@
               <div class="flex-1 relative">
                 <select [value]="modalProductCategory()"
                         (change)="modalProductCategory.set($any($event.target).value)"
-                        class="w-full bg-gray-50/80 border border-gray-200 rounded-xl pl-4 pr-10 py-3 text-[#2a2a18] text-xs font-bold focus:outline-none focus:border-[#f0c355] appearance-none cursor-pointer">
+                        class="w-full bg-gray-50/80 border border-gray-200 rounded-xl pl-4 pr-10 py-3 text-[#2a2a18] text-xs font-bold focus:outline-none focus:border-[#632a85] appearance-none cursor-pointer">
                   @for (cat of categories(); track cat) {
                     @if (cat !== 'All' && cat !== 'Favorites') {
                       <option [value]="cat">{{ cat }}</option>
@@ -1184,7 +1184,7 @@
                 <mat-icon class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none !text-base">expand_more</mat-icon>
               </div>
               <button (click)="addNewCategory()"
-                      class="bg-[#f0c355] hover:opacity-90 active:scale-95 text-[#2a2a18] px-4 rounded-xl text-xs font-extrabold flex items-center justify-center gap-1 transition">
+                      class="bg-[#632a85] hover:opacity-90 active:scale-95 text-[#2a2a18] px-4 rounded-xl text-xs font-extrabold flex items-center justify-center gap-1 transition">
                 <span>+</span> New
               </button>
             </div>
@@ -1197,7 +1197,7 @@
                    [value]="modalProductPrice()"
                    (input)="modalProductPrice.set($any($event.target).valueAsNumber)"
                    placeholder="0.00"
-                   class="w-full bg-gray-50/80 border border-gray-200 rounded-xl px-4 py-3 text-[#2a2a18] text-xs font-bold focus:outline-none focus:border-[#f0c355]">
+                   class="w-full bg-gray-50/80 border border-gray-200 rounded-xl px-4 py-3 text-[#2a2a18] text-xs font-bold focus:outline-none focus:border-[#632a85]">
           </div>
 
           <!-- Quantity & Unit selector -->
@@ -1208,11 +1208,11 @@
                      [value]="modalProductQuantity()"
                      (input)="modalProductQuantity.set($any($event.target).valueAsNumber)"
                      placeholder="100"
-                     class="flex-1 bg-gray-50/80 border border-gray-200 rounded-xl px-4 py-3 text-[#2a2a18] text-xs font-bold focus:outline-none focus:border-[#f0c355]">
+                     class="flex-1 bg-gray-50/80 border border-gray-200 rounded-xl px-4 py-3 text-[#2a2a18] text-xs font-bold focus:outline-none focus:border-[#632a85]">
               <div class="w-32 relative">
                 <select [value]="modalProductUnit()"
                         (change)="modalProductUnit.set($any($event.target).value)"
-                        class="w-full bg-gray-50/80 border border-gray-200 rounded-xl pl-4 pr-10 py-3 text-[#2a2a18] text-xs font-bold focus:outline-none focus:border-[#f0c355] appearance-none cursor-pointer">
+                        class="w-full bg-gray-50/80 border border-gray-200 rounded-xl pl-4 pr-10 py-3 text-[#2a2a18] text-xs font-bold focus:outline-none focus:border-[#632a85] appearance-none cursor-pointer">
                   <option value="Pieces">Pieces</option>
                   <option value="Pcs">Pcs</option>
                   <option value="Kg">Kg</option>
